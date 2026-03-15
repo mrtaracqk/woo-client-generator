@@ -1,0 +1,36 @@
+{
+  "name": "woo-client-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local generator for WooCommerce REST snapshots and TypeScript client artifacts.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "generate:woo": "npm run generate:woo:manifest && npm run generate:woo:sdk-manifest && npm run generate:woo:sdk && npm run generate:woo:definitions",
+    "generate:woo:check": "tsx scripts/woo/check-generated-artifacts.ts",
+    "generate:woo:definitions": "tsx scripts/woo/generate-operation-definitions.ts",
+    "generate:woo:manifest": "tsx scripts/woo/build-woo-manifest.ts",
+    "generate:woo:sdk": "tsx scripts/woo/build-woo-sdk.ts",
+    "generate:woo:sdk-manifest": "tsx scripts/woo/build-woo-sdk-manifest.ts",
+    "generate:woo:sdk-types": "npm run generate:woo:sdk",
+    "generate:woo:sync": "tsx scripts/woo/sync-woo-rest.ts",
+    "generate:woo:snapshot": "tsx scripts/woo/fetch-woo-rest-schema.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "woo:fixture:bootstrap": "docker compose -f scripts/woo/fixture/docker-compose.yml run --rm wpcli sh /workspace/scripts/woo/fixture/bootstrap.sh",
+    "woo:fixture:down": "docker compose -f scripts/woo/fixture/docker-compose.yml down -v",
+    "woo:fixture:up": "docker compose -f scripts/woo/fixture/docker-compose.yml up -d db wordpress"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
+  }
+}

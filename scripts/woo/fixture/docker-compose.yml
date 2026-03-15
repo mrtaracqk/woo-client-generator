@@ -1,0 +1,66 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: wordpress
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - 127.0.0.1
+        - -uroot
+        - -proot
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - woo_fixture_db:/var/lib/mysql
+
+  wordpress:
+    image: ${WOO_FIXTURE_WORDPRESS_IMAGE:-wordpress:6.9.1-php8.2-apache}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_USER: wordpress
+    ports:
+      - '${WOO_FIXTURE_PORT:-8081}:80'
+    volumes:
+      - woo_fixture_wp:/var/www/html
+
+  wpcli:
+    image: ${WOO_FIXTURE_WPCLI_IMAGE:-wordpress:cli-php8.2}
+    user: '33:33'
+    depends_on:
+      db:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+    environment:
+      WOO_FIXTURE_ADMIN_EMAIL: ${WOO_FIXTURE_ADMIN_EMAIL:-admin@example.test}
+      WOO_FIXTURE_ADMIN_PASSWORD: ${WOO_FIXTURE_ADMIN_PASSWORD:-admin_password}
+      WOO_FIXTURE_ADMIN_USER: ${WOO_FIXTURE_ADMIN_USER:-admin}
+      WOO_FIXTURE_PORT: ${WOO_FIXTURE_PORT:-8081}
+      WOO_FIXTURE_SITE_TITLE: ${WOO_FIXTURE_SITE_TITLE:-Woo MCP Fixture}
+      WOO_FIXTURE_SITE_URL: ${WOO_FIXTURE_SITE_URL:-http://127.0.0.1:8081}
+      WOO_FIXTURE_WOO_VERSION: ${WOO_FIXTURE_WOO_VERSION:-9.9.7}
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_USER: wordpress
+    volumes:
+      - woo_fixture_wp:/var/www/html
+      - ../../../:/workspace
+    working_dir: /var/www/html
+
+volumes:
+  woo_fixture_db:
+  woo_fixture_wp:

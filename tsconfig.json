@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023"],
+    "types": ["node", "vitest/globals"],
+    "strict": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "src/woo-sdk-runtime/**/*.ts",
+    "generated/woo-sdk/src/**/*.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["scripts/woo/woo-rest-committed-registry.spec.ts"]
+}

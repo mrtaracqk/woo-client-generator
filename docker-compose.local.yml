@@ -1,0 +1,83 @@
+name: op-bot
+
+services:
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${PHOENIX_HOST_PORT:-6006}:6006"
+      - "127.0.0.1:4317:4317"
+    networks:
+      - assistant-stack
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - assistant-stack
+
+  woo-mcp:
+    build:
+      context: ./woo-mcp
+    restart: unless-stopped
+    env_file:
+      - ./.local-env/woo-mcp.env
+    expose:
+      - "3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health/ready').then((response) => { process.exit(response.ok ? 0 : 1); }).catch(() => process.exit(1));",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    networks:
+      - egress
+      - assistant-stack
+
+  op-assistant:
+    build:
+      context: ./op-assistant
+    restart: unless-stopped
+    env_file:
+      - ./.local-env/op-assistant.env
+    depends_on:
+      phoenix:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      woo-mcp:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${OP_ASSISTANT_HOST_PORT:-11435}:11435"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:11435/healthz').then((response) => { process.exit(response.ok ? 0 : 1); }).catch(() => process.exit(1));",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    networks:
+      - assistant-stack
+
+networks:
+  egress:
+    driver: bridge
+  assistant-stack:
+    driver: bridge
