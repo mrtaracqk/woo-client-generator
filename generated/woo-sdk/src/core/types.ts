@@ -35,6 +35,15 @@ export type WooRequestExecutor = <TResponse>(
   options: ExecuteWooRequestOptions,
 ) => Promise<TResponse>;
 
+export interface WooRequestResult<TData> {
+  data: TData;
+  headers: Headers;
+}
+
+export type WooRequestExecutorWithHeaders = <TResponse>(
+  options: ExecuteWooRequestOptions,
+) => Promise<WooRequestResult<TResponse>>;
+
 export interface WooApiErrorDetails<TData = unknown> {
   data: TData;
   headers: Headers;

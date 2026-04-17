@@ -1,5 +1,6 @@
 import {
   createWooRequestExecutor,
+  createWooRequestExecutorWithHeaders,
   WooApiError,
 } from "../../src/woo-sdk-runtime/http";
 
@@ -40,14 +41,14 @@ describe("woo-sdk runtime", () => {
       },
       query: {
         include: [1, 2],
-        search: "shirt",
+        search: "summer sale",
       },
       routeTemplate: "/products/{id}",
     });
 
     expect(response).toEqual({ ok: true });
     expect(receivedUrl).toBe(
-      "https://example.test/wp-json/wc/v3/products/42?include=1&include=2&search=shirt&consumer_key=ck_test&consumer_secret=cs_test",
+      "https://example.test/wp-json/wc/v3/products/42?include=1&include=2&search=summer%20sale&consumer_key=ck_test&consumer_secret=cs_test",
     );
     expect(receivedInit?.method).toBe("POST");
     expect(receivedInit?.body).toBe(JSON.stringify({ name: "Test" }));
@@ -58,6 +59,28 @@ describe("woo-sdk runtime", () => {
     expect(new Headers(receivedInit?.headers).get("content-type")).toBe(
       "application/json",
     );
+  });
+
+  it("returns parsed data together with response headers", async () => {
+    const execute = createWooRequestExecutorWithHeaders({
+      baseUrl: "https://example.test/wp-json/wc/v3",
+      fetch: async () =>
+        new Response(JSON.stringify({ ok: true }), {
+          headers: {
+            "content-type": "application/json",
+            "x-wp-total": "10",
+          },
+          status: 200,
+        }),
+    });
+
+    const response = await execute<{ ok: boolean }>({
+      method: "GET",
+      routeTemplate: "/products",
+    });
+
+    expect(response.data).toEqual({ ok: true });
+    expect(response.headers.get("x-wp-total")).toBe("10");
   });
 
   it("throws WooApiError with parsed response details on non-ok responses", async () => {

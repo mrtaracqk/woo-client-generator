@@ -86,12 +86,15 @@ interface OperationNaming {
 export const buildWooSdkManifest = (
   snapshot: WooRestSnapshot,
 ): WooSdkManifest => {
-  const operations = disambiguateOperationNames(
+  const operationsWithDerivedSchemas = deriveMissingReadResponseSchemas(
     snapshot.routes.flatMap((route) =>
       buildOperationsForRoute(route, snapshot.source.namespace),
     ),
-  )
-    .sort(compareOperations);
+  );
+
+  const operations = disambiguateOperationNames(operationsWithDerivedSchemas).sort(
+    compareOperations,
+  );
 
   return sortJsonValue({
     source: snapshot.source,
@@ -101,6 +104,58 @@ export const buildWooSdkManifest = (
 
 export const stringifyWooSdkManifest = (manifest: WooSdkManifest): string =>
   `${JSON.stringify(sortJsonValue(manifest), null, 2)}\n`;
+
+const deriveMissingReadResponseSchemas = (
+  operations: WooSdkOperation[],
+): WooSdkOperation[] => {
+  const listSchemasByBaseRoute = new Map<string, Record<string, unknown>>();
+
+  for (const operation of operations) {
+    if (
+      operation.kind === "list" &&
+      operation.method === "GET" &&
+      operation.responseSchema
+    ) {
+      const baseRoute = stripTrailingPathParamSegment(operation.routeTemplate);
+      listSchemasByBaseRoute.set(baseRoute, operation.responseSchema);
+    }
+  }
+
+  return operations.map((operation) => {
+    if (
+      operation.kind === "read" &&
+      operation.method === "GET" &&
+      operation.responseSchema === undefined
+    ) {
+      const baseRoute = stripTrailingPathParamSegment(operation.routeTemplate);
+      const derivedSchema = listSchemasByBaseRoute.get(baseRoute);
+
+      if (derivedSchema) {
+        return {
+          ...operation,
+          responseSchema: derivedSchema,
+        };
+      }
+    }
+
+    return operation;
+  });
+};
+
+const stripTrailingPathParamSegment = (routeTemplate: string): string => {
+  const segments = routeTemplate.split("/").filter(Boolean);
+
+  if (segments.length === 0) {
+    return routeTemplate;
+  }
+
+  const lastSegment = segments[segments.length - 1];
+  if (/^\{[^}]+\}$/.test(lastSegment)) {
+    return `/${segments.slice(0, -1).join("/")}`;
+  }
+
+  return routeTemplate;
+};
 
 const disambiguateOperationNames = (
   operations: WooSdkOperation[],

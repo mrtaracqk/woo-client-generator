@@ -43,7 +43,17 @@ describe("woo-sdk-types committed artifact", () => {
           path: "createMarketplaceCreateOrder.body.properties.product_id",
         },
         {
+          message:
+            "Schema does not declare a supported type; using z.unknown().",
+          path: "createMarketplaceCreateOrder.body.properties.product_id",
+        },
+        {
           message: "Schema does not declare a supported type; using unknown.",
+          path: "createShippingZoneMethod.body.properties.method_id",
+        },
+        {
+          message:
+            "Schema does not declare a supported type; using z.unknown().",
           path: "createShippingZoneMethod.body.properties.method_id",
         },
       ]);

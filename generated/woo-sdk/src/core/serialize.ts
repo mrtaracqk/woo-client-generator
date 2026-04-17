@@ -33,7 +33,11 @@ export const buildWooRequestUrl = ({
 
   url.pathname = joinUrlPath(url.pathname, resolvedPath);
 
-  appendQueryParams(url.searchParams, query);
+  const serializedQuery = serializeQuery(query);
+
+  if (serializedQuery.length > 0) {
+    url.search = `?${serializedQuery}`;
+  }
 
   return url;
 };
@@ -59,21 +63,22 @@ const encodePathSegment = (
   return encodeURIComponent(String(value));
 };
 
-const appendQueryParams = (
-  searchParams: URLSearchParams,
-  query: Record<string, unknown> | undefined,
-): void => {
+const serializeQuery = (query: Record<string, unknown> | undefined): string => {
   if (!query) {
-    return;
+    return "";
   }
+
+  const pairs: string[] = [];
 
   for (const [key, value] of Object.entries(query)) {
-    appendQueryValue(searchParams, key, value);
+    appendSerializedValue(pairs, key, value);
   }
+
+  return pairs.join("&");
 };
 
-const appendQueryValue = (
-  searchParams: URLSearchParams,
+const appendSerializedValue = (
+  pairs: string[],
   key: string,
   value: unknown,
 ): void => {
@@ -83,27 +88,37 @@ const appendQueryValue = (
 
   if (Array.isArray(value)) {
     for (const item of value) {
-      appendQueryValue(searchParams, key, item);
+      appendSerializedValue(pairs, key, item);
     }
 
     return;
   }
 
   if (value instanceof Date) {
-    searchParams.append(key, value.toISOString());
+    pairs.push(
+      `${encodeQueryComponent(key)}=${encodeQueryComponent(value.toISOString())}`,
+    );
     return;
   }
 
   if (isPlainObject(value)) {
-    searchParams.append(key, JSON.stringify(value));
+    pairs.push(
+      `${encodeQueryComponent(key)}=${encodeQueryComponent(JSON.stringify(value))}`,
+    );
     return;
   }
 
-  searchParams.append(key, String(value));
+  pairs.push(`${encodeQueryComponent(key)}=${encodeQueryComponent(String(value))}`);
 };
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object";
+
+const encodeQueryComponent = (value: string): string =>
+  encodeURIComponent(value).replace(
+    /[!'()*]/g,
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
 
 const joinUrlPath = (basePath: string, routePath: string): string => {
   const normalizedBasePath = basePath.endsWith("/")

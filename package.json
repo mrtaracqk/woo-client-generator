@@ -11,6 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "generate:woo": "npm run generate:woo:manifest && npm run generate:woo:sdk-manifest && npm run generate:woo:sdk && npm run generate:woo:definitions",
+    "generate:woo:full": "npm run generate:woo:snapshot -- \"$@\" && npm run generate:woo",
+    "generate:woo:fixture": "tsx scripts/woo/fixture-up-and-generate.ts",
     "generate:woo:check": "tsx scripts/woo/check-generated-artifacts.ts",
     "generate:woo:definitions": "tsx scripts/woo/generate-operation-definitions.ts",
     "generate:woo:manifest": "tsx scripts/woo/build-woo-manifest.ts",
@@ -23,11 +25,19 @@
     "test:watch": "vitest",
     "woo:fixture:bootstrap": "docker compose -f scripts/woo/fixture/docker-compose.yml run --rm wpcli sh /workspace/scripts/woo/fixture/bootstrap.sh",
     "woo:fixture:down": "docker compose -f scripts/woo/fixture/docker-compose.yml down -v",
-    "woo:fixture:up": "docker compose -f scripts/woo/fixture/docker-compose.yml up -d db wordpress"
+    "woo:fixture:up": "docker compose -f scripts/woo/fixture/docker-compose.yml up -d db wordpress",
+    "playground:dev": "vite",
+    "playground:build": "vite build",
+    "playground:preview": "vite preview",
+    "playground:proxy": "tsx playground/proxy.ts"
   },
   "license": "ISC",
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
   "devDependencies": {
     "@types/node": "^22.13.14",
+    "vite": "^6.0.0",
     "prettier": "^3.5.3",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",

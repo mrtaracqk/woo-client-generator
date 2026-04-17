@@ -1,6 +1,6 @@
 # woo-client-generator
 
-Local Node/TypeScript toolchain for collecting WooCommerce REST snapshots and generating repository artifacts from them.
+Local Node/TypeScript toolchain for collecting WooCommerce REST API snapshots and generating a TypeScript SDK from them. The SDK includes TypeScript types and [Zod](https://zod.dev) schemas for path/query/body/response, suitable for runtime validation and building LLM tool definitions.
 
 ## Requirements
 
@@ -11,45 +11,61 @@ Local Node/TypeScript toolchain for collecting WooCommerce REST snapshots and ge
 
 ```bash
 npm install
-cp .env.example .env
 ```
 
-`cp .env.example .env` is optional if you always pass `--base-url`, but it keeps the default workflow zero-config.
+## Get the SDK
 
-## Available scripts
+**One command (Docker):** start fixture, bootstrap WooCommerce, generate SDK. Output: `generated/woo-sdk/`.
 
 ```bash
-npm run check
-npm run test
-npm run format
-npm run woo:fixture:up
-npm run woo:fixture:bootstrap
-npm run woo:fixture:down
-npm run generate:woo:snapshot -- --base-url=http://127.0.0.1:8081
-npm run generate:woo:manifest
-npm run generate:woo:sdk-manifest
-npm run generate:woo:sdk
-npm run generate:woo:sdk-types
-npm run generate:woo:definitions
-npm run generate:woo
-npm run generate:woo:sync -- --keep-up
+npm run generate:woo:fixture
 ```
 
-## Default workflow
+Uses `WOO_REST_SNAPSHOT_BASE_URL` or `WOO_BASE_URL` from `.env` (default `http://127.0.0.1:8081`).
 
-1. Install dependencies with `npm install`.
-2. Start the local fixture with `npm run woo:fixture:up`.
-3. Bootstrap WordPress + WooCommerce with `npm run woo:fixture:bootstrap`.
-4. Fetch a live snapshot with `npm run generate:woo:snapshot -- --base-url=http://127.0.0.1:8081`.
-5. Build derived artifacts with `npm run generate:woo`.
+---
+
+**If WooCommerce is already running** at some URL:
+
+```bash
+npm run generate:woo:full -- --base-url=http://127.0.0.1:8081
+```
+
+Or set `WOO_REST_SNAPSHOT_BASE_URL` in `.env` and run `npm run generate:woo:full`.
+
+Optional: `--woo-version=9.9.7` pins the version in artifact filenames.
+
+---
+
+Other commands: `check`, `test`, `format`, `generate:woo:check`, `generate:woo:sync`, fixture `up`/`bootstrap`/`down`. Internal: `generate:woo:snapshot`, `generate:woo`, `generate:woo:manifest`, `generate:woo:sdk-manifest`, `generate:woo:sdk`, `generate:woo:definitions`.
+
+## SDK Playground
+
+A small HTML/TS page to try the generated SDK against a live WooCommerce API: enter base URL and keys, pick module and method, set path/query/body (JSON), and run.
+
+- **Dev:** `npm run playground:dev` — Vite dev server (e.g. http://localhost:5173).
+- **Build:** `npm run playground:build` — output in `dist-playground/`.
+- **Preview:** `npm run playground:preview` — serve the built app.
+
+If the browser blocks requests (different origin than Woo), run a CORS proxy and point the playground Base URL at it: `npm run playground:proxy`. Set `WOO_BASE_URL` (or `WOO_REST_SNAPSHOT_BASE_URL`) to the full REST root (e.g. `http://127.0.0.1:8081/wp-json/wc/v3`), then set Base URL in the playground to `http://localhost:3199`.
+
+## Generated SDK layout
+
+Output under `generated/woo-sdk/src/`:
+
+- **`client.ts`** — HTTP client and request helpers
+- **`index.ts`** — re-exports
+- **`models/*.ts`** — per-resource modules: Zod schemas (`*Schema`) and types (`z.infer<typeof *Schema>`)
+- **`operations/*.ts`** — typed operation functions
+- **`core/*`** — shared runtime (copied as-is)
+
+The SDK depends on `zod` (^3.x). Use the exported schemas for runtime validation or to build LLM tool definitions (e.g. OpenAI/Anthropic tools).
 
 ## Notes
 
-- TypeScript scripts run through `tsx`; `ts-node` is no longer required.
-- Default unit tests intentionally exclude the legacy committed-registry spec because this repository does not currently ship the old generated `src/woo-core` tree.
-- Snapshot generation is deterministic: routes, methods, and JSON keys are sorted, and the canonical snapshot artifact does not embed a runtime timestamp.
-- The new SDK manifest is written next to the snapshot as `generated/woo-rest/woo-vX.Y.Z.sdk-manifest.json`; it stays separate from the legacy `.manifest.json` used by the old registry output.
-- The generated Woo SDK source now includes `generated/woo-sdk/src/client.ts`, `generated/woo-sdk/src/index.ts`, grouped modules in `generated/woo-sdk/src/models/*` and `generated/woo-sdk/src/operations/*`, plus a stable runtime copied into `generated/woo-sdk/src/core/*`.
-- Namespace filtering stays configurable through `--namespace` or `WOO_REST_SNAPSHOT_NAMESPACE`; the default remains `wc/v3`.
-- WooCommerce version resolution order is: `--woo-version`, `WOO_REST_SNAPSHOT_WOO_VERSION`, live `wp-content/plugins/woocommerce/readme.txt`, then `unknown`.
-- When a route does not expose `OPTIONS`, the snapshot step logs a stable warning and continues without enrichment for that route.
+- Scripts run with `tsx`; `ts-node` is not required.
+- Snapshot generation is deterministic: routes, methods, and JSON keys are sorted; the snapshot does not embed a timestamp.
+- SDK manifest: `generated/woo-rest/woo-vX.Y.Z.sdk-manifest.json` (separate from the legacy `.manifest.json`).
+- Namespace: `--namespace` or `WOO_REST_SNAPSHOT_NAMESPACE`; default `wc/v3`.
+- WooCommerce version: `--woo-version` or `WOO_REST_SNAPSHOT_WOO_VERSION`, then live `readme.txt`, then `unknown`.
+- If a route does not expose `OPTIONS`, the snapshot step logs a warning and continues without enrichment.

@@ -3,7 +3,7 @@
  * Changes here are copied into generated/woo-sdk/src/core.
  */
 
-import { applyWooAuthentication } from "./auth";
+import { applyWooAuthentication, getWooAuthQuery } from "./auth";
 import { buildWooRequestUrl, serializeJsonBody } from "./serialize";
 import {
   CreateWooClientConfig,
@@ -11,6 +11,8 @@ import {
   WooApiErrorDetails,
   WooHeadersInit,
   WooRequestExecutor,
+  WooRequestExecutorWithHeaders,
+  WooRequestResult,
 } from "./types";
 
 export class WooApiError<TData = unknown> extends Error {
@@ -36,6 +38,35 @@ export class WooApiError<TData = unknown> extends Error {
 export const createWooRequestExecutor = (
   config: CreateWooClientConfig,
 ): WooRequestExecutor => {
+  const fetchImplementation = resolveFetchImplementation(config);
+
+  return async <TResponse>(
+    options: ExecuteWooRequestOptions,
+  ): Promise<TResponse> => {
+    const result = await executeWooRequest<TResponse>(
+      fetchImplementation,
+      config,
+      options,
+    );
+
+    return result.data;
+  };
+};
+
+export const createWooRequestExecutorWithHeaders = (
+  config: CreateWooClientConfig,
+): WooRequestExecutorWithHeaders => {
+  const fetchImplementation = resolveFetchImplementation(config);
+
+  return async <TResponse>(
+    options: ExecuteWooRequestOptions,
+  ): Promise<WooRequestResult<TResponse>> =>
+    executeWooRequest<TResponse>(fetchImplementation, config, options);
+};
+
+const resolveFetchImplementation = (
+  config: CreateWooClientConfig,
+): typeof fetch => {
   const fetchImplementation = config.fetch ?? globalThis.fetch;
 
   if (!fetchImplementation) {
@@ -44,54 +75,67 @@ export const createWooRequestExecutor = (
     );
   }
 
-  return async <TResponse>(
-    options: ExecuteWooRequestOptions,
-  ): Promise<TResponse> => {
-    const headers = new Headers(config.headers);
-    mergeHeaders(headers, options.headers);
+  return fetchImplementation;
+};
 
-    const body = serializeJsonBody(options.body);
+const executeWooRequest = async <TResponse>(
+  fetchImplementation: typeof fetch,
+  config: CreateWooClientConfig,
+  options: ExecuteWooRequestOptions,
+): Promise<WooRequestResult<TResponse>> => {
+  const headers = new Headers(config.headers);
+  mergeHeaders(headers, options.headers);
 
-    if (body !== undefined && !headers.has("content-type")) {
-      headers.set("content-type", "application/json");
-    }
+  const body = serializeJsonBody(options.body);
 
-    if (!headers.has("accept")) {
-      headers.set("accept", "application/json");
-    }
+  if (body !== undefined && !headers.has("content-type")) {
+    headers.set("content-type", "application/json");
+  }
 
-    const url = buildWooRequestUrl({
-      baseUrl: config.baseUrl,
-      path: options.path,
-      query: options.query,
-      routeTemplate: options.routeTemplate,
-    });
+  if (!headers.has("accept")) {
+    headers.set("accept", "application/json");
+  }
 
-    applyWooAuthentication(url, headers, config);
+  const authQuery = getWooAuthQuery(config);
+  const url = buildWooRequestUrl({
+    baseUrl: config.baseUrl,
+    path: options.path,
+    query: authQuery
+      ? {
+          ...options.query,
+          ...authQuery,
+        }
+      : options.query,
+    routeTemplate: options.routeTemplate,
+  });
 
-    const response = await fetchImplementation(url, {
-      body,
-      headers,
-      method: options.method,
-      signal: options.signal,
-    });
-    const responseData = await parseWooResponseBody(response);
+  applyWooAuthentication(headers, config);
 
-    if (!response.ok) {
-      throw new WooApiError(
-        `Woo request failed with ${response.status} ${response.statusText}.`,
-        {
-          data: responseData,
-          headers: response.headers,
-          method: options.method,
-          status: response.status,
-          statusText: response.statusText,
-          url: url.toString(),
-        },
-      );
-    }
+  const response = await fetchImplementation(url, {
+    body,
+    headers,
+    method: options.method,
+    signal: options.signal,
+  });
+  const responseData = await parseWooResponseBody(response);
 
-    return responseData as TResponse;
+  if (!response.ok) {
+    throw new WooApiError(
+      `Woo request failed with ${response.status} ${response.statusText}.`,
+      {
+        data: responseData,
+        headers: response.headers,
+        method: options.method,
+        status: response.status,
+        statusText: response.statusText,
+        url: url.toString(),
+      },
+    );
+  }
+
+  return {
+    data: responseData as TResponse,
+    headers: response.headers,
   };
 };
 

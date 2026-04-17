@@ -5,18 +5,68 @@
 
 import { CreateWooClientConfig } from "./types";
 
+type WooAuthConfig = Pick<
+  CreateWooClientConfig,
+  "authStrategy" | "consumerKey" | "consumerSecret"
+>;
+
+export const getWooAuthQuery = (
+  config: WooAuthConfig,
+): Record<string, string> | undefined => {
+  const credentials = resolveWooAuthCredentials(config);
+
+  if (!credentials) {
+    return undefined;
+  }
+
+  if (
+    credentials.authStrategy !== "query" &&
+    credentials.authStrategy !== "auto"
+  ) {
+    return undefined;
+  }
+
+  return {
+    consumer_key: credentials.consumerKey,
+    consumer_secret: credentials.consumerSecret,
+  };
+};
+
 export const applyWooAuthentication = (
-  url: URL,
   headers: Headers,
-  config: Pick<
-    CreateWooClientConfig,
-    "authStrategy" | "consumerKey" | "consumerSecret"
-  >,
+  config: WooAuthConfig,
 ): void => {
+  const credentials = resolveWooAuthCredentials(config);
+
+  if (!credentials) {
+    return;
+  }
+
+  const { authStrategy, consumerKey, consumerSecret } = credentials;
+
+  if (authStrategy === "query" || authStrategy === "auto") {
+    return;
+  }
+
+  headers.set(
+    "authorization",
+    `Basic ${encodeBasicCredentials(consumerKey, consumerSecret)}`,
+  );
+};
+
+const resolveWooAuthCredentials = (
+  config: WooAuthConfig,
+):
+  | {
+      authStrategy: NonNullable<CreateWooClientConfig["authStrategy"]>;
+      consumerKey: string;
+      consumerSecret: string;
+    }
+  | undefined => {
   const { consumerKey, consumerSecret } = config;
 
   if (!consumerKey && !consumerSecret) {
-    return;
+    return undefined;
   }
 
   if (!consumerKey || !consumerSecret) {
@@ -25,18 +75,11 @@ export const applyWooAuthentication = (
     );
   }
 
-  const authStrategy = config.authStrategy ?? "auto";
-
-  if (authStrategy === "query" || authStrategy === "auto") {
-    url.searchParams.set("consumer_key", consumerKey);
-    url.searchParams.set("consumer_secret", consumerSecret);
-    return;
-  }
-
-  headers.set(
-    "authorization",
-    `Basic ${encodeBasicCredentials(consumerKey, consumerSecret)}`,
-  );
+  return {
+    authStrategy: config.authStrategy ?? "auto",
+    consumerKey,
+    consumerSecret,
+  };
 };
 
 const encodeBasicCredentials = (

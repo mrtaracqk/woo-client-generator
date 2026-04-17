@@ -277,13 +277,26 @@ const fetchJsonFromCandidates = async <T>(
 };
 
 const fetchJson = async <T>(url: URL, init?: RequestInit): Promise<T> => {
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      Accept: "application/json",
-      ...init?.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...init,
+      headers: {
+        Accept: "application/json",
+        ...init?.headers,
+      },
+    });
+  } catch (err) {
+    const thrown = err instanceof Error ? err : new Error(String(err));
+    const systemErr = thrown.cause instanceof Error ? thrown.cause : null;
+    const detail =
+      (systemErr as NodeJS.ErrnoException | undefined)?.code ??
+      systemErr?.message ??
+      thrown.message;
+    throw new Error(`fetch failed for ${url.toString()}: ${detail}`, {
+      cause: thrown,
+    });
+  }
 
   if (!response.ok) {
     throw new Error(

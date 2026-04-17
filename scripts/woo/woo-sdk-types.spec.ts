@@ -97,17 +97,32 @@ describe("woo-sdk-types", () => {
       'export * from "./products";',
     );
     expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
-      "export type ProductsListQuery = { page?: number };",
+      'import { z } from "zod";',
     );
     expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
-      "export type ProductsListResponse = Array<{ id?: number; name?: string }>;",
+      "export const productsListQuerySchema = ",
     );
     expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
-      "export type ProductsCreateBody = { name: string; [key: string]: unknown };",
+      "export type ProductsListQuery = z.infer<typeof productsListQuerySchema>",
     );
     expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
-      "export type ProductsCreateResponse = Record<string, unknown>;",
+      "export const productsListResponseSchema = ",
     );
+    expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
+      "export type ProductsListResponse = z.infer<typeof productsListResponseSchema>",
+    );
+    expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
+      "export const productsCreateBodySchema = ",
+    );
+    expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
+      "export type ProductsCreateBody = z.infer<typeof productsCreateBodySchema>",
+    );
+    expect(findGeneratedFile(artifacts, "models/products.ts")).toContain(
+      "export const productsCreateResponseSchema = ",
+    );
+    const productsSource = findGeneratedFile(artifacts, "models/products.ts");
+    expect(productsSource).toContain("export type ProductsCreateResponse = z.infer<");
+    expect(productsSource).toContain("typeof productsCreateResponseSchema");
   });
 });
 

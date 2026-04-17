@@ -164,7 +164,27 @@ const ignoreMissingEnvFile = (error: unknown): void => {
   throw error;
 };
 
+function getCauseDetail(err: Error): string | null {
+  const c = err.cause;
+  if (!c || !(c instanceof Error)) return null;
+  const code = (c as NodeJS.ErrnoException).code;
+  if (code) return code;
+  if (c.message && c.message !== err.message && c.message !== "fetch failed")
+    return c.message;
+  return getCauseDetail(c) ?? (c.message === "fetch failed" ? null : c.message);
+}
+
+const ECONNREFUSED_HINT =
+  "No server at that URL. For local run: npm run woo:fixture:up && npm run woo:fixture:bootstrap";
+
 void main().catch((error: unknown) => {
-  console.error((error as Error).message);
+  const err = error as Error & { cause?: Error };
+  const detail = getCauseDetail(err);
+  const message =
+    detail && !err.message.includes(detail) ? `${err.message} (${detail})` : err.message;
+  console.error(message);
+  if (message.includes("ECONNREFUSED")) {
+    console.error(ECONNREFUSED_HINT);
+  }
   process.exitCode = 1;
 });

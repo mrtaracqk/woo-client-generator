@@ -1,5 +1,9 @@
 import path from "node:path";
 import {
+  renderWooSchemaZod,
+  WooSchemaToZodWarning,
+} from "./woo-schema-to-zod";
+import {
   renderWooSchemaTypeScript,
   WooSchemaToTypeScriptWarning,
 } from "./woo-schema-to-typescript";
@@ -14,13 +18,13 @@ import {
 
 export interface GeneratedWooSdkTypeArtifacts {
   modelFiles: GeneratedWooSdkSourceFile[];
-  warnings: WooSchemaToTypeScriptWarning[];
+  warnings: (WooSchemaToTypeScriptWarning | WooSchemaToZodWarning)[];
 }
 
 export const buildWooSdkTypeArtifacts = async (
   manifest: WooSdkManifest,
 ): Promise<GeneratedWooSdkTypeArtifacts> => {
-  const warnings: WooSchemaToTypeScriptWarning[] = [];
+  const warnings: (WooSchemaToTypeScriptWarning | WooSchemaToZodWarning)[] = [];
   const operationGroups = groupOperationsByResource(manifest.operations);
   const modelFiles = await Promise.all(
     operationGroups.map(async ({ operations, resourceGroup }) => ({
@@ -43,12 +47,14 @@ export const buildWooSdkTypeArtifacts = async (
 const buildModelModuleSource = async (
   manifest: WooSdkManifest,
   operations: WooSdkOperation[],
-  warnings: WooSchemaToTypeScriptWarning[],
+  warnings: (WooSchemaToTypeScriptWarning | WooSchemaToZodWarning)[],
 ): Promise<string> => {
   const declarations = operations.flatMap((operation) =>
     buildOperationDeclarations(operation, warnings),
   );
   const rawSource = `${buildWooSdkSourceHeader(manifest)}
+
+import { z } from "zod";
 
 ${declarations.join("\n\n")}
 `;
@@ -73,7 +79,7 @@ ${exports.join("\n")}
 
 const buildOperationDeclarations = (
   operation: WooSdkOperation,
-  warnings: WooSchemaToTypeScriptWarning[],
+  warnings: (WooSchemaToTypeScriptWarning | WooSchemaToZodWarning)[],
 ): string[] => {
   const declarations: string[] = [];
 
@@ -127,6 +133,14 @@ const buildOperationDeclarations = (
   return declarations;
 };
 
+/** e.g. CouponGetPathParams -> couponGetPathParamsSchema */
+const typeNameToSchemaVarName = (typeName: string): string => {
+  if (typeName.length === 0) return "schema";
+  const first = typeName[0];
+  const rest = typeName.slice(1);
+  return `${first.toLowerCase()}${rest}Schema`;
+};
+
 const buildTypeAliasDeclaration = ({
   description,
   path,
@@ -139,18 +153,28 @@ const buildTypeAliasDeclaration = ({
   path: string;
   schema: Record<string, unknown> | undefined;
   typeName: string;
-  warnings: WooSchemaToTypeScriptWarning[];
+  warnings: (WooSchemaToTypeScriptWarning | WooSchemaToZodWarning)[];
   wrapAsArray?: boolean;
 }): string => {
-  const rendered = renderWooSchemaTypeScript(schema, path, {
-    warnOnMissingSchema: schema !== undefined,
-  });
-  warnings.push(...rendered.warnings);
+  const schemaVarName = typeNameToSchemaVarName(typeName);
+  const warnOpt = { warnOnMissingSchema: schema !== undefined };
+
+  const renderedTs = renderWooSchemaTypeScript(schema, path, warnOpt);
+  warnings.push(...renderedTs.warnings);
+
+  const renderedZod = renderWooSchemaZod(schema, path, warnOpt);
+  warnings.push(...renderedZod.warnings);
+
+  const zodExpr = wrapAsArray
+    ? `z.array(${renderedZod.zod})`
+    : renderedZod.zod;
 
   return `/**
  * ${escapeComment(description)}
  */
-export type ${typeName} = ${wrapAsArray ? `Array<${rendered.typeScript}>` : rendered.typeScript};`;
+export const ${schemaVarName} = ${zodExpr};
+
+export type ${typeName} = z.infer<typeof ${schemaVarName}>;`;
 };
 
 const buildResponseDescription = (operation: WooSdkOperation): string => {

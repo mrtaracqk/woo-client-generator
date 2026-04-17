@@ -41486,9 +41486,9 @@
     }
   ],
   "source": {
-    "fetchedAt": "2026-03-15T17:21:54.150Z",
     "namespace": "wc.v3",
     "wooCommerceVersion": "9.9.7",
+    "wooCommerceVersionSource": "cli",
     "wordpressVersion": "unknown"
   }
 }

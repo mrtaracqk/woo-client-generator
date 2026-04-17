@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Woo SDK Playground</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <h1>Woo SDK Playground</h1>
+        <p class="subtitle">
+          Test generated WooCommerce REST client against a live API
+        </p>
+      </header>
+
+      <section class="config section">
+        <h2>Config</h2>
+        <div class="config-grid">
+          <label>
+            <span>Base URL</span>
+            <input
+              type="text"
+              id="baseUrl"
+              placeholder="https://example.com/wp-json/wc/v3"
+            />
+          </label>
+          <label>
+            <span>Consumer Key</span>
+            <input
+              type="text"
+              id="consumerKey"
+              placeholder="ck_..."
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            <span>Consumer Secret</span>
+            <input
+              type="password"
+              id="consumerSecret"
+              placeholder="cs_..."
+              autocomplete="off"
+            />
+          </label>
+        </div>
+      </section>
+
+      <section class="operation section">
+        <h2>Operation</h2>
+        <div class="operation-row">
+          <label>
+            <span>Module</span>
+            <select id="moduleSelect"></select>
+          </label>
+          <label>
+            <span>Method</span>
+            <select id="methodSelect"></select>
+          </label>
+        </div>
+        <p id="routeHint" class="route-hint"></p>
+      </section>
+
+      <section class="params section">
+        <h2>Request (JSON)</h2>
+        <div class="params-grid">
+          <label>
+            <span>Path params</span>
+            <textarea
+              id="pathParams"
+              rows="4"
+              placeholder='{"id": 123}'
+            ></textarea>
+          </label>
+          <label>
+            <span>Query params</span>
+            <textarea
+              id="queryParams"
+              rows="4"
+              placeholder='{"per_page": 10}'
+            ></textarea>
+          </label>
+          <label>
+            <span>Body (for POST/PUT)</span>
+            <textarea id="bodyParams" rows="6" placeholder="{}"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="actions">
+        <button type="button" id="runBtn">Run</button>
+      </section>
+
+      <section class="response section">
+        <h2>Response</h2>
+        <div id="responseStatus" class="response-status"></div>
+        <pre id="responseBody"></pre>
+      </section>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

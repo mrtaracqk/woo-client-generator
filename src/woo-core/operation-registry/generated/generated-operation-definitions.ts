@@ -3,7 +3,7 @@
  * generator-version: 1
  * wordpress-version: unknown
  * woocommerce-version: 9.9.7
- * woocommerce-version-source: undefined
+ * woocommerce-version-source: cli
  */
 import {
   buildGeneratedOperationDefinitions,
