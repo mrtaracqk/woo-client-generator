@@ -37,7 +37,96 @@ export type CustomerDeleteQuery = z.infer<typeof customerDeleteQuerySchema>;
 /**
  * DELETE /customers/{id} response body.
  */
-export const customerDeleteResponseSchema = z.unknown();
+export const customerDeleteResponseSchema = z
+  .object({
+    avatar_url: z.string().optional().describe("Avatar URL."),
+    billing: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z.string().optional().describe("ISO code of the country."),
+        email: z.string().optional().describe("Email address."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("List of billing address data.")
+      .strict()
+      .optional()
+      .describe("List of billing address data."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the customer was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the customer was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the customer was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the customer was last modified, as GMT."),
+    email: z
+      .string()
+      .optional()
+      .describe("The email address for the customer."),
+    first_name: z.string().optional().describe("Customer first name."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    is_paying_customer: z
+      .boolean()
+      .optional()
+      .describe("Is the customer a paying customer?"),
+    last_name: z.string().optional().describe("Customer last name."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    password: z.string().optional().describe("Customer password."),
+    role: z.string().optional().describe("Customer role."),
+    shipping: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z.string().optional().describe("ISO code of the country."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("List of shipping address data.")
+      .strict()
+      .optional()
+      .describe("List of shipping address data."),
+    username: z.string().optional().describe("Customer login name."),
+  })
+  .strict();
 
 export type CustomerDeleteResponse = z.infer<
   typeof customerDeleteResponseSchema
@@ -75,7 +164,42 @@ export type CustomerDownloadsListQuery = z.infer<
 /**
  * GET /customers/{customer_id}/downloads response body.
  */
-export const customerDownloadsListResponseSchema = z.array(z.unknown());
+export const customerDownloadsListResponseSchema = z.array(
+  z
+    .object({
+      access_expires: z
+        .string()
+        .optional()
+        .describe(
+          "The date when download access expires, in the site's timezone.",
+        ),
+      access_expires_gmt: z
+        .string()
+        .optional()
+        .describe("The date when download access expires, as GMT."),
+      download_id: z.string().optional().describe("Download ID."),
+      download_name: z.string().optional().describe("Downloadable file name."),
+      download_url: z.string().optional().describe("Download file URL."),
+      downloads_remaining: z
+        .string()
+        .optional()
+        .describe("Number of downloads remaining."),
+      file: z
+        .object({
+          file: z.string().optional().describe("File URL."),
+          name: z.string().optional().describe("File name."),
+        })
+        .describe("File details.")
+        .strict()
+        .optional()
+        .describe("File details."),
+      order_id: z.number().optional().describe("Order ID."),
+      order_key: z.string().optional().describe("Order key."),
+      product_id: z.number().optional().describe("Downloadable product ID."),
+      product_name: z.string().optional().describe("Product name."),
+    })
+    .strict(),
+);
 
 export type CustomerDownloadsListResponse = z.infer<
   typeof customerDownloadsListResponseSchema
@@ -300,7 +424,96 @@ export type CustomerPostCustomBody = z.infer<
 /**
  * POST /customers/{id} response body.
  */
-export const customerPostCustomResponseSchema = z.unknown();
+export const customerPostCustomResponseSchema = z
+  .object({
+    avatar_url: z.string().optional().describe("Avatar URL."),
+    billing: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z.string().optional().describe("ISO code of the country."),
+        email: z.string().optional().describe("Email address."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("List of billing address data.")
+      .strict()
+      .optional()
+      .describe("List of billing address data."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the customer was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the customer was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the customer was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the customer was last modified, as GMT."),
+    email: z
+      .string()
+      .optional()
+      .describe("The email address for the customer."),
+    first_name: z.string().optional().describe("Customer first name."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    is_paying_customer: z
+      .boolean()
+      .optional()
+      .describe("Is the customer a paying customer?"),
+    last_name: z.string().optional().describe("Customer last name."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    password: z.string().optional().describe("Customer password."),
+    role: z.string().optional().describe("Customer role."),
+    shipping: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z.string().optional().describe("ISO code of the country."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("List of shipping address data.")
+      .strict()
+      .optional()
+      .describe("List of shipping address data."),
+    username: z.string().optional().describe("Customer login name."),
+  })
+  .strict();
 
 export type CustomerPostCustomResponse = z.infer<
   typeof customerPostCustomResponseSchema
@@ -510,7 +723,96 @@ export type CustomerUpdateBody = z.infer<typeof customerUpdateBodySchema>;
 /**
  * PUT /customers/{id} response body.
  */
-export const customerUpdateResponseSchema = z.unknown();
+export const customerUpdateResponseSchema = z
+  .object({
+    avatar_url: z.string().optional().describe("Avatar URL."),
+    billing: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z.string().optional().describe("ISO code of the country."),
+        email: z.string().optional().describe("Email address."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("List of billing address data.")
+      .strict()
+      .optional()
+      .describe("List of billing address data."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the customer was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the customer was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the customer was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the customer was last modified, as GMT."),
+    email: z
+      .string()
+      .optional()
+      .describe("The email address for the customer."),
+    first_name: z.string().optional().describe("Customer first name."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    is_paying_customer: z
+      .boolean()
+      .optional()
+      .describe("Is the customer a paying customer?"),
+    last_name: z.string().optional().describe("Customer last name."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    password: z.string().optional().describe("Customer password."),
+    role: z.string().optional().describe("Customer role."),
+    shipping: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z.string().optional().describe("ISO code of the country."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("List of shipping address data.")
+      .strict()
+      .optional()
+      .describe("List of shipping address data."),
+    username: z.string().optional().describe("Customer login name."),
+  })
+  .strict();
 
 export type CustomerUpdateResponse = z.infer<
   typeof customerUpdateResponseSchema

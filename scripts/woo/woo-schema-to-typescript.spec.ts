@@ -66,14 +66,15 @@ describe("woo-schema-to-typescript", () => {
     });
   });
 
-  it("supports quiet top-level fallbacks for missing schemas", () => {
-    expect(
-      renderWooSchemaTypeScript(undefined, "products.response", {
-        warnOnMissingSchema: false,
-      }),
-    ).toEqual({
+  it("always warns when the top-level schema is missing (no quiet fallback)", () => {
+    expect(renderWooSchemaTypeScript(undefined, "products.response")).toEqual({
       typeScript: "unknown",
-      warnings: [],
+      warnings: [
+        {
+          message: "Schema is missing or invalid; using unknown.",
+          path: "products.response",
+        },
+      ],
     });
   });
 });

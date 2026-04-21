@@ -16,8 +16,6 @@ import { createDataModule } from "./operations/data";
 import type { DataModule } from "./operations/data";
 import { createLayoutTemplatesModule } from "./operations/layoutTemplates";
 import type { LayoutTemplatesModule } from "./operations/layoutTemplates";
-import { createMarketplaceModule } from "./operations/marketplace";
-import type { MarketplaceModule } from "./operations/marketplace";
 import { createOrdersModule } from "./operations/orders";
 import type { OrdersModule } from "./operations/orders";
 import { createPaymentGatewaysModule } from "./operations/paymentGateways";
@@ -46,7 +44,6 @@ export interface WooClient {
   customers: CustomersModule;
   data: DataModule;
   layoutTemplates: LayoutTemplatesModule;
-  marketplace: MarketplaceModule;
   orders: OrdersModule;
   paymentGateways: PaymentGatewaysModule;
   products: ProductsModule;
@@ -68,7 +65,6 @@ export const createWooClient = (config: CreateWooClientConfig): WooClient => {
     customers: createCustomersModule(execute),
     data: createDataModule(execute),
     layoutTemplates: createLayoutTemplatesModule(execute),
-    marketplace: createMarketplaceModule(execute),
     orders: createOrdersModule(execute),
     paymentGateways: createPaymentGatewaysModule(execute),
     products: createProductsModule(execute),

@@ -36,7 +36,139 @@ export type CouponDeleteQuery = z.infer<typeof couponDeleteQuerySchema>;
 /**
  * DELETE /coupons/{id} response body.
  */
-export const couponDeleteResponseSchema = z.unknown();
+export const couponDeleteResponseSchema = z
+  .object({
+    amount: z
+      .string()
+      .optional()
+      .describe(
+        "The amount of discount. Should always be numeric, even if setting a percentage.",
+      ),
+    code: z.string().optional().describe("Coupon code."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the coupon was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon was created, as GMT."),
+    date_expires: z
+      .string()
+      .optional()
+      .describe("The date the coupon expires, in the site's timezone."),
+    date_expires_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon expires, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the coupon was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon was last modified, as GMT."),
+    description: z.string().optional().describe("Coupon description."),
+    discount_type: z
+      .enum(["percent", "fixed_cart", "fixed_product"])
+      .optional()
+      .describe("Determines the type of discount that will be applied."),
+    email_restrictions: z
+      .array(z.string())
+      .optional()
+      .describe("List of email addresses that can use this coupon."),
+    exclude_sale_items: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, this coupon will not be applied to items that have sale prices.",
+      ),
+    excluded_product_categories: z
+      .array(z.number())
+      .optional()
+      .describe("List of category IDs the coupon does not apply to."),
+    excluded_product_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of product IDs the coupon cannot be used on."),
+    free_shipping: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true and if the free shipping method requires a coupon, this coupon will enable free shipping.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the object."),
+    individual_use: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.",
+      ),
+    limit_usage_to_x_items: z
+      .number()
+      .optional()
+      .describe(
+        "Max number of items in the cart the coupon can be applied to.",
+      ),
+    maximum_amount: z
+      .string()
+      .optional()
+      .describe("Maximum order amount allowed when using the coupon."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    minimum_amount: z
+      .string()
+      .optional()
+      .describe(
+        "Minimum order amount that needs to be in the cart before coupon applies.",
+      ),
+    product_categories: z
+      .array(z.number())
+      .optional()
+      .describe("List of category IDs the coupon applies to."),
+    product_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of product IDs the coupon can be used on."),
+    status: z
+      .string()
+      .optional()
+      .describe(
+        "The status of the coupon. Should always be draft, published, or pending review",
+      ),
+    usage_count: z
+      .number()
+      .optional()
+      .describe("Number of times the coupon has been used already."),
+    usage_limit: z
+      .number()
+      .optional()
+      .describe("How many times the coupon can be used in total."),
+    usage_limit_per_user: z
+      .number()
+      .optional()
+      .describe("How many times the coupon can be used per customer."),
+    used_by: z
+      .array(z.number())
+      .optional()
+      .describe(
+        "List of user IDs (or guest email addresses) that have used the coupon.",
+      ),
+  })
+  .strict();
 
 export type CouponDeleteResponse = z.infer<typeof couponDeleteResponseSchema>;
 
@@ -339,7 +471,139 @@ export type CouponPostCustomBody = z.infer<typeof couponPostCustomBodySchema>;
 /**
  * POST /coupons/{id} response body.
  */
-export const couponPostCustomResponseSchema = z.unknown();
+export const couponPostCustomResponseSchema = z
+  .object({
+    amount: z
+      .string()
+      .optional()
+      .describe(
+        "The amount of discount. Should always be numeric, even if setting a percentage.",
+      ),
+    code: z.string().optional().describe("Coupon code."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the coupon was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon was created, as GMT."),
+    date_expires: z
+      .string()
+      .optional()
+      .describe("The date the coupon expires, in the site's timezone."),
+    date_expires_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon expires, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the coupon was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon was last modified, as GMT."),
+    description: z.string().optional().describe("Coupon description."),
+    discount_type: z
+      .enum(["percent", "fixed_cart", "fixed_product"])
+      .optional()
+      .describe("Determines the type of discount that will be applied."),
+    email_restrictions: z
+      .array(z.string())
+      .optional()
+      .describe("List of email addresses that can use this coupon."),
+    exclude_sale_items: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, this coupon will not be applied to items that have sale prices.",
+      ),
+    excluded_product_categories: z
+      .array(z.number())
+      .optional()
+      .describe("List of category IDs the coupon does not apply to."),
+    excluded_product_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of product IDs the coupon cannot be used on."),
+    free_shipping: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true and if the free shipping method requires a coupon, this coupon will enable free shipping.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the object."),
+    individual_use: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.",
+      ),
+    limit_usage_to_x_items: z
+      .number()
+      .optional()
+      .describe(
+        "Max number of items in the cart the coupon can be applied to.",
+      ),
+    maximum_amount: z
+      .string()
+      .optional()
+      .describe("Maximum order amount allowed when using the coupon."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    minimum_amount: z
+      .string()
+      .optional()
+      .describe(
+        "Minimum order amount that needs to be in the cart before coupon applies.",
+      ),
+    product_categories: z
+      .array(z.number())
+      .optional()
+      .describe("List of category IDs the coupon applies to."),
+    product_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of product IDs the coupon can be used on."),
+    status: z
+      .string()
+      .optional()
+      .describe(
+        "The status of the coupon. Should always be draft, published, or pending review",
+      ),
+    usage_count: z
+      .number()
+      .optional()
+      .describe("Number of times the coupon has been used already."),
+    usage_limit: z
+      .number()
+      .optional()
+      .describe("How many times the coupon can be used in total."),
+    usage_limit_per_user: z
+      .number()
+      .optional()
+      .describe("How many times the coupon can be used per customer."),
+    used_by: z
+      .array(z.number())
+      .optional()
+      .describe(
+        "List of user IDs (or guest email addresses) that have used the coupon.",
+      ),
+  })
+  .strict();
 
 export type CouponPostCustomResponse = z.infer<
   typeof couponPostCustomResponseSchema
@@ -631,7 +895,139 @@ export type CouponUpdateBody = z.infer<typeof couponUpdateBodySchema>;
 /**
  * PUT /coupons/{id} response body.
  */
-export const couponUpdateResponseSchema = z.unknown();
+export const couponUpdateResponseSchema = z
+  .object({
+    amount: z
+      .string()
+      .optional()
+      .describe(
+        "The amount of discount. Should always be numeric, even if setting a percentage.",
+      ),
+    code: z.string().optional().describe("Coupon code."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the coupon was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon was created, as GMT."),
+    date_expires: z
+      .string()
+      .optional()
+      .describe("The date the coupon expires, in the site's timezone."),
+    date_expires_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon expires, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the coupon was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the coupon was last modified, as GMT."),
+    description: z.string().optional().describe("Coupon description."),
+    discount_type: z
+      .enum(["percent", "fixed_cart", "fixed_product"])
+      .optional()
+      .describe("Determines the type of discount that will be applied."),
+    email_restrictions: z
+      .array(z.string())
+      .optional()
+      .describe("List of email addresses that can use this coupon."),
+    exclude_sale_items: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, this coupon will not be applied to items that have sale prices.",
+      ),
+    excluded_product_categories: z
+      .array(z.number())
+      .optional()
+      .describe("List of category IDs the coupon does not apply to."),
+    excluded_product_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of product IDs the coupon cannot be used on."),
+    free_shipping: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true and if the free shipping method requires a coupon, this coupon will enable free shipping.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the object."),
+    individual_use: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.",
+      ),
+    limit_usage_to_x_items: z
+      .number()
+      .optional()
+      .describe(
+        "Max number of items in the cart the coupon can be applied to.",
+      ),
+    maximum_amount: z
+      .string()
+      .optional()
+      .describe("Maximum order amount allowed when using the coupon."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    minimum_amount: z
+      .string()
+      .optional()
+      .describe(
+        "Minimum order amount that needs to be in the cart before coupon applies.",
+      ),
+    product_categories: z
+      .array(z.number())
+      .optional()
+      .describe("List of category IDs the coupon applies to."),
+    product_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of product IDs the coupon can be used on."),
+    status: z
+      .string()
+      .optional()
+      .describe(
+        "The status of the coupon. Should always be draft, published, or pending review",
+      ),
+    usage_count: z
+      .number()
+      .optional()
+      .describe("Number of times the coupon has been used already."),
+    usage_limit: z
+      .number()
+      .optional()
+      .describe("How many times the coupon can be used in total."),
+    usage_limit_per_user: z
+      .number()
+      .optional()
+      .describe("How many times the coupon can be used per customer."),
+    used_by: z
+      .array(z.number())
+      .optional()
+      .describe(
+        "List of user IDs (or guest email addresses) that have used the coupon.",
+      ),
+  })
+  .strict();
 
 export type CouponUpdateResponse = z.infer<typeof couponUpdateResponseSchema>;
 

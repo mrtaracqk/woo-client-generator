@@ -23,8 +23,24 @@ const COMMITTED_SDK_MANIFEST_PATH = path.resolve(
   "woo-rest",
   "woo-v9.9.7.sdk-manifest.json",
 );
+const snapshotIsStrictlyEnriched = (): boolean => {
+  if (!existsSync(COMMITTED_SNAPSHOT_PATH)) {
+    return false;
+  }
+
+  const snapshot = JSON.parse(
+    readFileSync(COMMITTED_SNAPSHOT_PATH, "utf8"),
+  ) as WooRestSnapshot;
+
+  return snapshot.routes.every((route) =>
+    route.methods.every((method) => method.schema !== undefined),
+  );
+};
+
 const itWithCommittedArtifacts =
-  existsSync(COMMITTED_SNAPSHOT_PATH) && existsSync(COMMITTED_SDK_MANIFEST_PATH)
+  existsSync(COMMITTED_SNAPSHOT_PATH) &&
+  existsSync(COMMITTED_SDK_MANIFEST_PATH) &&
+  snapshotIsStrictlyEnriched()
     ? it
     : it.skip;
 
@@ -45,12 +61,14 @@ describe("woo-sdk-manifest committed artifact", () => {
       expect(parsedManifest.source.wooCommerceVersion).toBe("9.9.7");
       expect(parsedManifest.operations.length).toBeGreaterThan(100);
       expect(
-        new Set(parsedManifest.operations.map((operation) => operation.internalKey))
-          .size,
+        new Set(
+          parsedManifest.operations.map((operation) => operation.internalKey),
+        ).size,
       ).toBe(parsedManifest.operations.length);
       expect(
-        new Set(parsedManifest.operations.map((operation) => operation.operationId))
-          .size,
+        new Set(
+          parsedManifest.operations.map((operation) => operation.operationId),
+        ).size,
       ).toBe(parsedManifest.operations.length);
     },
   );

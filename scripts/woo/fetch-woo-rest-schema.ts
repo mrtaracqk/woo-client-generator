@@ -60,6 +60,16 @@ const main = async (): Promise<void> => {
     console.warn(warning);
   }
 
+  if (optionsResult.failures.length > 0) {
+    for (const failure of optionsResult.failures) {
+      console.error(failure);
+    }
+
+    throw new Error(
+      `OPTIONS enrichment failed for ${optionsResult.failures.length} required route(s); refusing to write degraded snapshot`,
+    );
+  }
+
   const snapshot = buildWooRestSnapshot({
     source,
     namespaceDocument,
@@ -181,7 +191,9 @@ void main().catch((error: unknown) => {
   const err = error as Error & { cause?: Error };
   const detail = getCauseDetail(err);
   const message =
-    detail && !err.message.includes(detail) ? `${err.message} (${detail})` : err.message;
+    detail && !err.message.includes(detail)
+      ? `${err.message} (${detail})`
+      : err.message;
   console.error(message);
   if (message.includes("ECONNREFUSED")) {
     console.error(ECONNREFUSED_HINT);

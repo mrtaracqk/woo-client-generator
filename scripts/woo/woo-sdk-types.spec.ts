@@ -89,10 +89,9 @@ describe("woo-sdk-types", () => {
     const artifacts = await buildWooSdkTypeArtifacts(manifest);
 
     expect(artifacts.warnings).toEqual([]);
-    expect(artifacts.modelFiles.map((file) => file.outputRelativePath)).toEqual([
-      "models/products.ts",
-      "models/index.ts",
-    ]);
+    expect(artifacts.modelFiles.map((file) => file.outputRelativePath)).toEqual(
+      ["models/products.ts", "models/index.ts"],
+    );
     expect(findGeneratedFile(artifacts, "models/index.ts")).toContain(
       'export * from "./products";',
     );
@@ -121,8 +120,49 @@ describe("woo-sdk-types", () => {
       "export const productsCreateResponseSchema = ",
     );
     const productsSource = findGeneratedFile(artifacts, "models/products.ts");
-    expect(productsSource).toContain("export type ProductsCreateResponse = z.infer<");
+    expect(productsSource).toContain(
+      "export type ProductsCreateResponse = z.infer<",
+    );
     expect(productsSource).toContain("typeof productsCreateResponseSchema");
+  });
+
+  it("fails fast when any operation lacks a top-level response schema", async () => {
+    const manifest: WooSdkManifest = {
+      source: {
+        namespace: "wc/v3",
+        wooCommerceVersion: "9.9.7",
+        wooCommerceVersionSource: "readme.txt",
+        wordpressVersion: "6.8.1",
+      },
+      operations: [
+        {
+          authRequirement: "unknown",
+          functionName: "listProductVariations",
+          internalKey: "PRODUCT_VARIATIONS_LIST",
+          kind: "list",
+          method: "GET",
+          operationId: "listProductVariations",
+          pathParamsSchema: {
+            additionalProperties: false,
+            properties: {
+              product_id: { type: "integer" },
+            },
+            required: ["product_id"],
+            type: "object",
+          },
+          pathParamsTypeName: "ProductVariationsListPathParams",
+          resourceGroup: "products",
+          responseIsArray: true,
+          responseTypeName: "ProductVariationsListResponse",
+          routeTemplate: "/products/{product_id}/variations",
+          typeBaseName: "ProductVariationsList",
+        },
+      ],
+    };
+
+    await expect(buildWooSdkTypeArtifacts(manifest)).rejects.toThrow(
+      /PRODUCT_VARIATIONS_LIST/,
+    );
   });
 });
 

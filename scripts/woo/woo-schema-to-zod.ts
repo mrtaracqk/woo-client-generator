@@ -24,9 +24,6 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 export const renderWooSchemaZod = (
   schema: Record<string, unknown> | undefined,
   path = "$",
-  options?: {
-    warnOnMissingSchema?: boolean;
-  },
 ): {
   zod: string;
   warnings: WooSchemaToZodWarning[];
@@ -34,15 +31,12 @@ export const renderWooSchemaZod = (
   if (schema === undefined) {
     return {
       zod: "z.unknown()",
-      warnings:
-        options?.warnOnMissingSchema === false
-          ? []
-          : [
-              {
-                message: "Schema is missing or invalid; using z.unknown().",
-                path,
-              },
-            ],
+      warnings: [
+        {
+          message: "Schema is missing or invalid; using z.unknown().",
+          path,
+        },
+      ],
     };
   }
 
@@ -105,11 +99,18 @@ const renderSchema = (
     return renderByType(schema, rawType, state, path);
   }
 
-  if (schema.properties !== undefined || schema.additionalProperties !== undefined) {
+  if (
+    schema.properties !== undefined ||
+    schema.additionalProperties !== undefined
+  ) {
     return renderObjectSchema(schema, state, path);
   }
 
-  addWarning(state, path, "Schema does not declare a supported type; using z.unknown().");
+  addWarning(
+    state,
+    path,
+    "Schema does not declare a supported type; using z.unknown().",
+  );
   return "z.unknown()";
 };
 
@@ -119,7 +120,11 @@ const renderEnum = (
   path: string,
 ): string => {
   if (enumValues.length === 0) {
-    addWarning(state, path, "Enum does not contain any values; using z.unknown().");
+    addWarning(
+      state,
+      path,
+      "Enum does not contain any values; using z.unknown().",
+    );
     return "z.unknown()";
   }
 
@@ -183,7 +188,9 @@ const renderTypeUnion = (
   const hasNull = rawTypes.includes("null");
   const rest = rawTypes.filter((t) => t !== "null") as string[];
 
-  if (rest.some((t) => typeof t !== "string" || !SUPPORTED_SCHEMA_TYPES.has(t))) {
+  if (
+    rest.some((t) => typeof t !== "string" || !SUPPORTED_SCHEMA_TYPES.has(t))
+  ) {
     addWarning(
       state,
       path,
@@ -201,9 +208,7 @@ const renderTypeUnion = (
   );
 
   const base =
-    variants.length === 1
-      ? variants[0]
-      : `z.union([${variants.join(", ")}])`;
+    variants.length === 1 ? variants[0] : `z.union([${variants.join(", ")}])`;
 
   return hasNull ? `${base}.nullable()` : base;
 };
@@ -275,7 +280,8 @@ const renderObjectSchema = (
 ): string => {
   const properties = asRecord(schema.properties);
   const additionalProperties = schema.additionalProperties;
-  const description = typeof schema.description === "string" ? schema.description : undefined;
+  const description =
+    typeof schema.description === "string" ? schema.description : undefined;
 
   if (!properties || Object.keys(properties).length === 0) {
     if (
@@ -294,22 +300,28 @@ const renderObjectSchema = (
   }
 
   const required = new Set(readRequiredPropertyNames(schema.required));
-  const entries = Object.entries(properties).map(([propertyName, propertySchema]) => {
-    const key = renderObjectKey(propertyName);
-    const propSchema = asRecord(propertySchema);
-    const propDesc =
-      propSchema && typeof propSchema.description === "string"
-        ? propSchema.description
-        : undefined;
-    const rendered = renderSchema(
-      propSchema,
-      state,
-      `${path}.properties.${propertyName}`,
-    );
-    const optional = required.has(propertyName) ? rendered : `${rendered}.optional()`;
-    const withDesc = propDesc ? `${optional}.describe(${JSON.stringify(propDesc)})` : optional;
-    return `${key}: ${withDesc}`;
-  });
+  const entries = Object.entries(properties).map(
+    ([propertyName, propertySchema]) => {
+      const key = renderObjectKey(propertyName);
+      const propSchema = asRecord(propertySchema);
+      const propDesc =
+        propSchema && typeof propSchema.description === "string"
+          ? propSchema.description
+          : undefined;
+      const rendered = renderSchema(
+        propSchema,
+        state,
+        `${path}.properties.${propertyName}`,
+      );
+      const optional = required.has(propertyName)
+        ? rendered
+        : `${rendered}.optional()`;
+      const withDesc = propDesc
+        ? `${optional}.describe(${JSON.stringify(propDesc)})`
+        : optional;
+      return `${key}: ${withDesc}`;
+    },
+  );
 
   let objectExpr = `z.object({ ${entries.join(", ")} })`;
 
@@ -319,7 +331,10 @@ const renderObjectSchema = (
 
   if (additionalProperties === true) {
     objectExpr = `${objectExpr}.passthrough()`;
-  } else if (additionalProperties === false || additionalProperties === undefined) {
+  } else if (
+    additionalProperties === false ||
+    additionalProperties === undefined
+  ) {
     objectExpr = `${objectExpr}.strict()`;
   } else if (isRecord(additionalProperties)) {
     const valueZod = renderSchema(

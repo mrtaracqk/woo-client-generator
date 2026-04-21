@@ -34,7 +34,638 @@ export type OrderDeleteQuery = z.infer<typeof orderDeleteQuerySchema>;
 /**
  * DELETE /orders/{id} response body.
  */
-export const orderDeleteResponseSchema = z.unknown();
+export const orderDeleteResponseSchema = z
+  .object({
+    billing: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z
+          .string()
+          .optional()
+          .describe("Country code in ISO 3166-1 alpha-2 format."),
+        email: z.string().nullable().optional().describe("Email address."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("Billing address.")
+      .strict()
+      .optional()
+      .describe("Billing address."),
+    cart_hash: z
+      .string()
+      .optional()
+      .describe("MD5 hash of cart items to ensure orders are not modified."),
+    cart_tax: z.string().optional().describe("Sum of line item taxes only."),
+    coupon_lines: z
+      .array(
+        z
+          .object({
+            code: z.unknown().optional().describe("Coupon code."),
+            discount: z.string().optional().describe("Discount total."),
+            discount_tax: z.string().optional().describe("Discount total tax."),
+            discount_type: z.string().optional().describe("Discount type."),
+            free_shipping: z
+              .boolean()
+              .optional()
+              .describe("Whether the coupon grants free shipping or not."),
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            nominal_amount: z
+              .number()
+              .optional()
+              .describe(
+                "Discount amount as defined in the coupon (absolute value or a percent, depending on the discount type).",
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Coupons line data."),
+    created_via: z
+      .string()
+      .optional()
+      .describe("Shows where the order was created."),
+    currency: z
+      .enum([
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AUD",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BRL",
+        "BSD",
+        "BTC",
+        "BTN",
+        "BWP",
+        "BYR",
+        "BYN",
+        "BZD",
+        "CAD",
+        "CDF",
+        "CHF",
+        "CLP",
+        "CNY",
+        "COP",
+        "CRC",
+        "CUC",
+        "CUP",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ERN",
+        "ETB",
+        "EUR",
+        "FJD",
+        "FKP",
+        "GBP",
+        "GEL",
+        "GGP",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HRK",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "IMP",
+        "INR",
+        "IQD",
+        "IRR",
+        "IRT",
+        "ISK",
+        "JEP",
+        "JMD",
+        "JOD",
+        "JPY",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KPW",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MRU",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "NZD",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PRB",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SDG",
+        "SEK",
+        "SGD",
+        "SHP",
+        "SLL",
+        "SOS",
+        "SRD",
+        "SSP",
+        "STN",
+        "SYP",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USD",
+        "UYU",
+        "UZS",
+        "VEF",
+        "VES",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XOF",
+        "XPF",
+        "YER",
+        "ZAR",
+        "ZMW",
+      ])
+      .optional()
+      .describe("Currency the order was created with, in ISO format."),
+    customer_id: z
+      .number()
+      .optional()
+      .describe("User ID who owns the order. 0 for guests."),
+    customer_ip_address: z
+      .string()
+      .optional()
+      .describe("Customer's IP address."),
+    customer_note: z
+      .string()
+      .optional()
+      .describe("Note left by customer during checkout."),
+    customer_user_agent: z
+      .string()
+      .optional()
+      .describe("User agent of the customer."),
+    date_completed: z
+      .string()
+      .optional()
+      .describe("The date the order was completed, in the site's timezone."),
+    date_completed_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was completed, as GMT."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the order was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the order was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was last modified, as GMT."),
+    date_paid: z
+      .string()
+      .optional()
+      .describe("The date the order was paid, in the site's timezone."),
+    date_paid_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was paid, as GMT."),
+    discount_tax: z
+      .string()
+      .optional()
+      .describe("Total discount tax amount for the order."),
+    discount_total: z
+      .string()
+      .optional()
+      .describe("Total discount amount for the order."),
+    fee_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Fee name."),
+            tax_class: z.string().optional().describe("Tax class of fee."),
+            tax_status: z
+              .enum(["taxable", "none"])
+              .optional()
+              .describe("Tax status of fee."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Fee lines data."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    is_editable: z
+      .boolean()
+      .optional()
+      .describe("Whether an order can be edited."),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            image: z
+              .object({
+                id: z.number().optional().describe("Image ID."),
+                src: z.string().optional().describe("Image URL."),
+              })
+              .describe("Properties of the main product image.")
+              .strict()
+              .optional()
+              .describe("Properties of the main product image."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    display_key: z
+                      .string()
+                      .optional()
+                      .describe("Meta key for UI display."),
+                    display_value: z
+                      .string()
+                      .optional()
+                      .describe("Meta value for UI display."),
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Product name."),
+            parent_name: z
+              .string()
+              .optional()
+              .describe("Parent product name if the product is a variation."),
+            price: z.number().optional().describe("Product price."),
+            product_id: z.unknown().optional().describe("Product ID."),
+            quantity: z.number().optional().describe("Quantity ordered."),
+            sku: z.string().optional().describe("Product SKU."),
+            subtotal: z
+              .string()
+              .optional()
+              .describe("Line subtotal (before discounts)."),
+            subtotal_tax: z
+              .string()
+              .optional()
+              .describe("Line subtotal tax (before discounts)."),
+            tax_class: z.string().optional().describe("Tax class of product."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+            variation_id: z
+              .number()
+              .optional()
+              .describe("Variation ID, if applicable."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Line items data."),
+    manual_update: z
+      .boolean()
+      .optional()
+      .describe(
+        'Set the action as manual so that the order note registers as "added by user".',
+      ),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    needs_payment: z
+      .boolean()
+      .optional()
+      .describe(
+        "Whether an order needs payment, based on status and order total.",
+      ),
+    needs_processing: z
+      .boolean()
+      .optional()
+      .describe(
+        "Whether an order needs processing before it can be completed.",
+      ),
+    number: z.string().optional().describe("Order number."),
+    order_key: z.string().optional().describe("Order key."),
+    parent_id: z.number().optional().describe("Parent order ID."),
+    payment_method: z.string().optional().describe("Payment method ID."),
+    payment_method_title: z
+      .string()
+      .optional()
+      .describe("Payment method title."),
+    payment_url: z.string().optional().describe("Order payment URL."),
+    prices_include_tax: z
+      .boolean()
+      .optional()
+      .describe("True the prices included tax during checkout."),
+    refunds: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Refund ID."),
+            reason: z.string().optional().describe("Refund reason."),
+            total: z.string().optional().describe("Refund total."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of refunds."),
+    set_paid: z
+      .boolean()
+      .optional()
+      .describe(
+        "Define if the order is paid. It will set the status to processing and reduce stock items.",
+      ),
+    shipping: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z
+          .string()
+          .optional()
+          .describe("Country code in ISO 3166-1 alpha-2 format."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("Shipping address.")
+      .strict()
+      .optional()
+      .describe("Shipping address."),
+    shipping_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            instance_id: z
+              .string()
+              .optional()
+              .describe("Shipping instance ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            method_id: z.unknown().optional().describe("Shipping method ID."),
+            method_title: z
+              .unknown()
+              .optional()
+              .describe("Shipping method name."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Shipping lines data."),
+    shipping_tax: z
+      .string()
+      .optional()
+      .describe("Total shipping tax amount for the order."),
+    shipping_total: z
+      .string()
+      .optional()
+      .describe("Total shipping amount for the order."),
+    status: z
+      .enum([
+        "auto-draft",
+        "pending",
+        "processing",
+        "on-hold",
+        "completed",
+        "cancelled",
+        "refunded",
+        "failed",
+        "checkout-draft",
+      ])
+      .optional()
+      .describe("Order status."),
+    tax_lines: z
+      .array(
+        z
+          .object({
+            compound: z
+              .boolean()
+              .optional()
+              .describe("Show if is a compound tax rate."),
+            id: z.number().optional().describe("Item ID."),
+            label: z.string().optional().describe("Tax rate label."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            rate_code: z.string().optional().describe("Tax rate code."),
+            rate_id: z.number().optional().describe("Tax rate ID."),
+            shipping_tax_total: z
+              .string()
+              .optional()
+              .describe("Shipping tax total."),
+            tax_total: z
+              .string()
+              .optional()
+              .describe("Tax total (not including shipping taxes)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Tax lines data."),
+    total: z.string().optional().describe("Grand total."),
+    total_tax: z.string().optional().describe("Sum of all taxes."),
+    transaction_id: z.string().optional().describe("Unique transaction ID."),
+    version: z
+      .string()
+      .optional()
+      .describe("Version of WooCommerce which last updated the order."),
+  })
+  .strict();
 
 export type OrderDeleteResponse = z.infer<typeof orderDeleteResponseSchema>;
 
@@ -52,7 +683,35 @@ export type OrderEmailTemplatesPathParams = z.infer<
 /**
  * GET /orders/{id}/actions/email_templates response body.
  */
-export const orderEmailTemplatesResponseSchema = z.unknown();
+export const orderEmailTemplatesResponseSchema = z
+  .object({
+    description: z
+      .string()
+      .optional()
+      .describe("A description of the purpose of the email template."),
+    id: z
+      .enum([
+        "new_order",
+        "cancelled_order",
+        "failed_order",
+        "customer_failed_order",
+        "customer_on_hold_order",
+        "customer_processing_order",
+        "customer_completed_order",
+        "customer_refunded_order",
+        "customer_invoice",
+        "customer_note",
+        "customer_reset_password",
+        "customer_new_account",
+      ])
+      .optional()
+      .describe("A unique ID string for the email template."),
+    title: z
+      .string()
+      .optional()
+      .describe("The display name of the email template."),
+  })
+  .strict();
 
 export type OrderEmailTemplatesResponse = z.infer<
   typeof orderEmailTemplatesResponseSchema
@@ -747,7 +1406,33 @@ export type OrderNoteDeleteQuery = z.infer<typeof orderNoteDeleteQuerySchema>;
 /**
  * DELETE /orders/{order_id}/notes/{id} response body.
  */
-export const orderNoteDeleteResponseSchema = z.unknown();
+export const orderNoteDeleteResponseSchema = z
+  .object({
+    added_by_user: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, this note will be attributed to the current user. If false, the note will be attributed to the system.",
+      ),
+    author: z.string().optional().describe("Order note author."),
+    customer_note: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.",
+      ),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the order note was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order note was created, as GMT."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    note: z.string().optional().describe("Order note content."),
+  })
+  .strict();
 
 export type OrderNoteDeleteResponse = z.infer<
   typeof orderNoteDeleteResponseSchema
@@ -783,7 +1468,33 @@ export type OrderNoteGetQuery = z.infer<typeof orderNoteGetQuerySchema>;
 /**
  * GET /orders/{order_id}/notes/{id} response body.
  */
-export const orderNoteGetResponseSchema = z.unknown();
+export const orderNoteGetResponseSchema = z
+  .object({
+    added_by_user: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, this note will be attributed to the current user. If false, the note will be attributed to the system.",
+      ),
+    author: z.string().optional().describe("Order note author."),
+    customer_note: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.",
+      ),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the order note was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order note was created, as GMT."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    note: z.string().optional().describe("Order note content."),
+  })
+  .strict();
 
 export type OrderNoteGetResponse = z.infer<typeof orderNoteGetResponseSchema>;
 
@@ -824,7 +1535,33 @@ export type OrderNotesCreateBody = z.infer<typeof orderNotesCreateBodySchema>;
 /**
  * POST /orders/{order_id}/notes response body.
  */
-export const orderNotesCreateResponseSchema = z.unknown();
+export const orderNotesCreateResponseSchema = z
+  .object({
+    added_by_user: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, this note will be attributed to the current user. If false, the note will be attributed to the system.",
+      ),
+    author: z.string().optional().describe("Order note author."),
+    customer_note: z
+      .boolean()
+      .optional()
+      .describe(
+        "If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.",
+      ),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the order note was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order note was created, as GMT."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    note: z.string().optional().describe("Order note content."),
+  })
+  .strict();
 
 export type OrderNotesCreateResponse = z.infer<
   typeof orderNotesCreateResponseSchema
@@ -864,7 +1601,37 @@ export type OrderNotesListQuery = z.infer<typeof orderNotesListQuerySchema>;
 /**
  * GET /orders/{order_id}/notes response body.
  */
-export const orderNotesListResponseSchema = z.array(z.unknown());
+export const orderNotesListResponseSchema = z.array(
+  z
+    .object({
+      added_by_user: z
+        .boolean()
+        .optional()
+        .describe(
+          "If true, this note will be attributed to the current user. If false, the note will be attributed to the system.",
+        ),
+      author: z.string().optional().describe("Order note author."),
+      customer_note: z
+        .boolean()
+        .optional()
+        .describe(
+          "If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.",
+        ),
+      date_created: z
+        .string()
+        .optional()
+        .describe(
+          "The date the order note was created, in the site's timezone.",
+        ),
+      date_created_gmt: z
+        .string()
+        .optional()
+        .describe("The date the order note was created, as GMT."),
+      id: z.number().optional().describe("Unique identifier for the resource."),
+      note: z.string().optional().describe("Order note content."),
+    })
+    .strict(),
+);
 
 export type OrderNotesListResponse = z.infer<
   typeof orderNotesListResponseSchema
@@ -1498,7 +2265,638 @@ export type OrderPostCustomBody = z.infer<typeof orderPostCustomBodySchema>;
 /**
  * POST /orders/{id} response body.
  */
-export const orderPostCustomResponseSchema = z.unknown();
+export const orderPostCustomResponseSchema = z
+  .object({
+    billing: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z
+          .string()
+          .optional()
+          .describe("Country code in ISO 3166-1 alpha-2 format."),
+        email: z.string().nullable().optional().describe("Email address."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("Billing address.")
+      .strict()
+      .optional()
+      .describe("Billing address."),
+    cart_hash: z
+      .string()
+      .optional()
+      .describe("MD5 hash of cart items to ensure orders are not modified."),
+    cart_tax: z.string().optional().describe("Sum of line item taxes only."),
+    coupon_lines: z
+      .array(
+        z
+          .object({
+            code: z.unknown().optional().describe("Coupon code."),
+            discount: z.string().optional().describe("Discount total."),
+            discount_tax: z.string().optional().describe("Discount total tax."),
+            discount_type: z.string().optional().describe("Discount type."),
+            free_shipping: z
+              .boolean()
+              .optional()
+              .describe("Whether the coupon grants free shipping or not."),
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            nominal_amount: z
+              .number()
+              .optional()
+              .describe(
+                "Discount amount as defined in the coupon (absolute value or a percent, depending on the discount type).",
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Coupons line data."),
+    created_via: z
+      .string()
+      .optional()
+      .describe("Shows where the order was created."),
+    currency: z
+      .enum([
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AUD",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BRL",
+        "BSD",
+        "BTC",
+        "BTN",
+        "BWP",
+        "BYR",
+        "BYN",
+        "BZD",
+        "CAD",
+        "CDF",
+        "CHF",
+        "CLP",
+        "CNY",
+        "COP",
+        "CRC",
+        "CUC",
+        "CUP",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ERN",
+        "ETB",
+        "EUR",
+        "FJD",
+        "FKP",
+        "GBP",
+        "GEL",
+        "GGP",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HRK",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "IMP",
+        "INR",
+        "IQD",
+        "IRR",
+        "IRT",
+        "ISK",
+        "JEP",
+        "JMD",
+        "JOD",
+        "JPY",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KPW",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MRU",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "NZD",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PRB",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SDG",
+        "SEK",
+        "SGD",
+        "SHP",
+        "SLL",
+        "SOS",
+        "SRD",
+        "SSP",
+        "STN",
+        "SYP",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USD",
+        "UYU",
+        "UZS",
+        "VEF",
+        "VES",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XOF",
+        "XPF",
+        "YER",
+        "ZAR",
+        "ZMW",
+      ])
+      .optional()
+      .describe("Currency the order was created with, in ISO format."),
+    customer_id: z
+      .number()
+      .optional()
+      .describe("User ID who owns the order. 0 for guests."),
+    customer_ip_address: z
+      .string()
+      .optional()
+      .describe("Customer's IP address."),
+    customer_note: z
+      .string()
+      .optional()
+      .describe("Note left by customer during checkout."),
+    customer_user_agent: z
+      .string()
+      .optional()
+      .describe("User agent of the customer."),
+    date_completed: z
+      .string()
+      .optional()
+      .describe("The date the order was completed, in the site's timezone."),
+    date_completed_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was completed, as GMT."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the order was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the order was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was last modified, as GMT."),
+    date_paid: z
+      .string()
+      .optional()
+      .describe("The date the order was paid, in the site's timezone."),
+    date_paid_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was paid, as GMT."),
+    discount_tax: z
+      .string()
+      .optional()
+      .describe("Total discount tax amount for the order."),
+    discount_total: z
+      .string()
+      .optional()
+      .describe("Total discount amount for the order."),
+    fee_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Fee name."),
+            tax_class: z.string().optional().describe("Tax class of fee."),
+            tax_status: z
+              .enum(["taxable", "none"])
+              .optional()
+              .describe("Tax status of fee."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Fee lines data."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    is_editable: z
+      .boolean()
+      .optional()
+      .describe("Whether an order can be edited."),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            image: z
+              .object({
+                id: z.number().optional().describe("Image ID."),
+                src: z.string().optional().describe("Image URL."),
+              })
+              .describe("Properties of the main product image.")
+              .strict()
+              .optional()
+              .describe("Properties of the main product image."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    display_key: z
+                      .string()
+                      .optional()
+                      .describe("Meta key for UI display."),
+                    display_value: z
+                      .string()
+                      .optional()
+                      .describe("Meta value for UI display."),
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Product name."),
+            parent_name: z
+              .string()
+              .optional()
+              .describe("Parent product name if the product is a variation."),
+            price: z.number().optional().describe("Product price."),
+            product_id: z.unknown().optional().describe("Product ID."),
+            quantity: z.number().optional().describe("Quantity ordered."),
+            sku: z.string().optional().describe("Product SKU."),
+            subtotal: z
+              .string()
+              .optional()
+              .describe("Line subtotal (before discounts)."),
+            subtotal_tax: z
+              .string()
+              .optional()
+              .describe("Line subtotal tax (before discounts)."),
+            tax_class: z.string().optional().describe("Tax class of product."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+            variation_id: z
+              .number()
+              .optional()
+              .describe("Variation ID, if applicable."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Line items data."),
+    manual_update: z
+      .boolean()
+      .optional()
+      .describe(
+        'Set the action as manual so that the order note registers as "added by user".',
+      ),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    needs_payment: z
+      .boolean()
+      .optional()
+      .describe(
+        "Whether an order needs payment, based on status and order total.",
+      ),
+    needs_processing: z
+      .boolean()
+      .optional()
+      .describe(
+        "Whether an order needs processing before it can be completed.",
+      ),
+    number: z.string().optional().describe("Order number."),
+    order_key: z.string().optional().describe("Order key."),
+    parent_id: z.number().optional().describe("Parent order ID."),
+    payment_method: z.string().optional().describe("Payment method ID."),
+    payment_method_title: z
+      .string()
+      .optional()
+      .describe("Payment method title."),
+    payment_url: z.string().optional().describe("Order payment URL."),
+    prices_include_tax: z
+      .boolean()
+      .optional()
+      .describe("True the prices included tax during checkout."),
+    refunds: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Refund ID."),
+            reason: z.string().optional().describe("Refund reason."),
+            total: z.string().optional().describe("Refund total."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of refunds."),
+    set_paid: z
+      .boolean()
+      .optional()
+      .describe(
+        "Define if the order is paid. It will set the status to processing and reduce stock items.",
+      ),
+    shipping: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z
+          .string()
+          .optional()
+          .describe("Country code in ISO 3166-1 alpha-2 format."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("Shipping address.")
+      .strict()
+      .optional()
+      .describe("Shipping address."),
+    shipping_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            instance_id: z
+              .string()
+              .optional()
+              .describe("Shipping instance ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            method_id: z.unknown().optional().describe("Shipping method ID."),
+            method_title: z
+              .unknown()
+              .optional()
+              .describe("Shipping method name."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Shipping lines data."),
+    shipping_tax: z
+      .string()
+      .optional()
+      .describe("Total shipping tax amount for the order."),
+    shipping_total: z
+      .string()
+      .optional()
+      .describe("Total shipping amount for the order."),
+    status: z
+      .enum([
+        "auto-draft",
+        "pending",
+        "processing",
+        "on-hold",
+        "completed",
+        "cancelled",
+        "refunded",
+        "failed",
+        "checkout-draft",
+      ])
+      .optional()
+      .describe("Order status."),
+    tax_lines: z
+      .array(
+        z
+          .object({
+            compound: z
+              .boolean()
+              .optional()
+              .describe("Show if is a compound tax rate."),
+            id: z.number().optional().describe("Item ID."),
+            label: z.string().optional().describe("Tax rate label."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            rate_code: z.string().optional().describe("Tax rate code."),
+            rate_id: z.number().optional().describe("Tax rate ID."),
+            shipping_tax_total: z
+              .string()
+              .optional()
+              .describe("Shipping tax total."),
+            tax_total: z
+              .string()
+              .optional()
+              .describe("Tax total (not including shipping taxes)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Tax lines data."),
+    total: z.string().optional().describe("Grand total."),
+    total_tax: z.string().optional().describe("Sum of all taxes."),
+    transaction_id: z.string().optional().describe("Unique transaction ID."),
+    version: z
+      .string()
+      .optional()
+      .describe("Version of WooCommerce which last updated the order."),
+  })
+  .strict();
 
 export type OrderPostCustomResponse = z.infer<
   typeof orderPostCustomResponseSchema
@@ -2242,7 +3640,258 @@ export type OrderRefundDeleteQuery = z.infer<
 /**
  * DELETE /orders/{order_id}/refunds/{id} response body.
  */
-export const orderRefundDeleteResponseSchema = z.unknown();
+export const orderRefundDeleteResponseSchema = z
+  .object({
+    amount: z.string().optional().describe("Refund amount."),
+    api_refund: z
+      .boolean()
+      .optional()
+      .describe(
+        "When true, the payment gateway API is used to generate the refund.",
+      ),
+    api_restock: z
+      .boolean()
+      .optional()
+      .describe("When true, refunded items are restocked."),
+    date_created: z
+      .string()
+      .optional()
+      .describe(
+        "The date the order refund was created, in the site's timezone.",
+      ),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order refund was created, as GMT."),
+    fee_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Fee name."),
+            tax_class: z.string().optional().describe("Tax class of fee."),
+            tax_status: z
+              .enum(["taxable", "none"])
+              .optional()
+              .describe("Tax status of fee."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Fee lines data."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Product name."),
+            price: z.number().optional().describe("Product price."),
+            product_id: z.unknown().optional().describe("Product ID."),
+            quantity: z.number().optional().describe("Quantity ordered."),
+            refund_total: z
+              .number()
+              .optional()
+              .describe(
+                "Amount that will be refunded for this line item (excluding taxes).",
+              ),
+            sku: z.string().optional().describe("Product SKU."),
+            subtotal: z
+              .string()
+              .optional()
+              .describe("Line subtotal (before discounts)."),
+            subtotal_tax: z
+              .string()
+              .optional()
+              .describe("Line subtotal tax (before discounts)."),
+            tax_class: z.string().optional().describe("Tax class of product."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    refund_total: z
+                      .number()
+                      .optional()
+                      .describe("Amount that will be refunded for this tax."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+            variation_id: z
+              .number()
+              .optional()
+              .describe("Variation ID, if applicable."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Line items data."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    reason: z.string().optional().describe("Reason for refund."),
+    refunded_by: z
+      .number()
+      .optional()
+      .describe("User ID of user who created the refund."),
+    refunded_payment: z
+      .boolean()
+      .optional()
+      .describe("If the payment was refunded via the API."),
+    shipping_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            instance_id: z
+              .string()
+              .optional()
+              .describe("Shipping instance ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            method_id: z.unknown().optional().describe("Shipping method ID."),
+            method_title: z
+              .unknown()
+              .optional()
+              .describe("Shipping method name."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Shipping lines data."),
+    tax_lines: z
+      .array(
+        z
+          .object({
+            compound: z
+              .boolean()
+              .optional()
+              .describe("Show if is a compound tax rate."),
+            id: z.number().optional().describe("Item ID."),
+            label: z.string().optional().describe("Tax rate label."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            rate_code: z.string().optional().describe("Tax rate code."),
+            rate_id: z.number().optional().describe("Tax rate ID."),
+            shipping_tax_total: z
+              .string()
+              .optional()
+              .describe("Shipping tax total."),
+            tax_total: z
+              .string()
+              .optional()
+              .describe("Tax total (not including shipping taxes)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Tax lines data."),
+  })
+  .strict();
 
 export type OrderRefundDeleteResponse = z.infer<
   typeof orderRefundDeleteResponseSchema
@@ -2278,7 +3927,258 @@ export type OrderRefundGetQuery = z.infer<typeof orderRefundGetQuerySchema>;
 /**
  * GET /orders/{order_id}/refunds/{id} response body.
  */
-export const orderRefundGetResponseSchema = z.unknown();
+export const orderRefundGetResponseSchema = z
+  .object({
+    amount: z.string().optional().describe("Refund amount."),
+    api_refund: z
+      .boolean()
+      .optional()
+      .describe(
+        "When true, the payment gateway API is used to generate the refund.",
+      ),
+    api_restock: z
+      .boolean()
+      .optional()
+      .describe("When true, refunded items are restocked."),
+    date_created: z
+      .string()
+      .optional()
+      .describe(
+        "The date the order refund was created, in the site's timezone.",
+      ),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order refund was created, as GMT."),
+    fee_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Fee name."),
+            tax_class: z.string().optional().describe("Tax class of fee."),
+            tax_status: z
+              .enum(["taxable", "none"])
+              .optional()
+              .describe("Tax status of fee."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Fee lines data."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Product name."),
+            price: z.number().optional().describe("Product price."),
+            product_id: z.unknown().optional().describe("Product ID."),
+            quantity: z.number().optional().describe("Quantity ordered."),
+            refund_total: z
+              .number()
+              .optional()
+              .describe(
+                "Amount that will be refunded for this line item (excluding taxes).",
+              ),
+            sku: z.string().optional().describe("Product SKU."),
+            subtotal: z
+              .string()
+              .optional()
+              .describe("Line subtotal (before discounts)."),
+            subtotal_tax: z
+              .string()
+              .optional()
+              .describe("Line subtotal tax (before discounts)."),
+            tax_class: z.string().optional().describe("Tax class of product."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    refund_total: z
+                      .number()
+                      .optional()
+                      .describe("Amount that will be refunded for this tax."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+            variation_id: z
+              .number()
+              .optional()
+              .describe("Variation ID, if applicable."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Line items data."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    reason: z.string().optional().describe("Reason for refund."),
+    refunded_by: z
+      .number()
+      .optional()
+      .describe("User ID of user who created the refund."),
+    refunded_payment: z
+      .boolean()
+      .optional()
+      .describe("If the payment was refunded via the API."),
+    shipping_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            instance_id: z
+              .string()
+              .optional()
+              .describe("Shipping instance ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            method_id: z.unknown().optional().describe("Shipping method ID."),
+            method_title: z
+              .unknown()
+              .optional()
+              .describe("Shipping method name."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Shipping lines data."),
+    tax_lines: z
+      .array(
+        z
+          .object({
+            compound: z
+              .boolean()
+              .optional()
+              .describe("Show if is a compound tax rate."),
+            id: z.number().optional().describe("Item ID."),
+            label: z.string().optional().describe("Tax rate label."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            rate_code: z.string().optional().describe("Tax rate code."),
+            rate_id: z.number().optional().describe("Tax rate ID."),
+            shipping_tax_total: z
+              .string()
+              .optional()
+              .describe("Shipping tax total."),
+            tax_total: z
+              .string()
+              .optional()
+              .describe("Tax total (not including shipping taxes)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Tax lines data."),
+  })
+  .strict();
 
 export type OrderRefundGetResponse = z.infer<
   typeof orderRefundGetResponseSchema
@@ -2499,7 +4399,258 @@ export type OrderRefundsCreateBody = z.infer<
 /**
  * POST /orders/{order_id}/refunds response body.
  */
-export const orderRefundsCreateResponseSchema = z.unknown();
+export const orderRefundsCreateResponseSchema = z
+  .object({
+    amount: z.string().optional().describe("Refund amount."),
+    api_refund: z
+      .boolean()
+      .optional()
+      .describe(
+        "When true, the payment gateway API is used to generate the refund.",
+      ),
+    api_restock: z
+      .boolean()
+      .optional()
+      .describe("When true, refunded items are restocked."),
+    date_created: z
+      .string()
+      .optional()
+      .describe(
+        "The date the order refund was created, in the site's timezone.",
+      ),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order refund was created, as GMT."),
+    fee_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Fee name."),
+            tax_class: z.string().optional().describe("Tax class of fee."),
+            tax_status: z
+              .enum(["taxable", "none"])
+              .optional()
+              .describe("Tax status of fee."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Fee lines data."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Product name."),
+            price: z.number().optional().describe("Product price."),
+            product_id: z.unknown().optional().describe("Product ID."),
+            quantity: z.number().optional().describe("Quantity ordered."),
+            refund_total: z
+              .number()
+              .optional()
+              .describe(
+                "Amount that will be refunded for this line item (excluding taxes).",
+              ),
+            sku: z.string().optional().describe("Product SKU."),
+            subtotal: z
+              .string()
+              .optional()
+              .describe("Line subtotal (before discounts)."),
+            subtotal_tax: z
+              .string()
+              .optional()
+              .describe("Line subtotal tax (before discounts)."),
+            tax_class: z.string().optional().describe("Tax class of product."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    refund_total: z
+                      .number()
+                      .optional()
+                      .describe("Amount that will be refunded for this tax."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+            variation_id: z
+              .number()
+              .optional()
+              .describe("Variation ID, if applicable."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Line items data."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    reason: z.string().optional().describe("Reason for refund."),
+    refunded_by: z
+      .number()
+      .optional()
+      .describe("User ID of user who created the refund."),
+    refunded_payment: z
+      .boolean()
+      .optional()
+      .describe("If the payment was refunded via the API."),
+    shipping_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            instance_id: z
+              .string()
+              .optional()
+              .describe("Shipping instance ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            method_id: z.unknown().optional().describe("Shipping method ID."),
+            method_title: z
+              .unknown()
+              .optional()
+              .describe("Shipping method name."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Shipping lines data."),
+    tax_lines: z
+      .array(
+        z
+          .object({
+            compound: z
+              .boolean()
+              .optional()
+              .describe("Show if is a compound tax rate."),
+            id: z.number().optional().describe("Item ID."),
+            label: z.string().optional().describe("Tax rate label."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            rate_code: z.string().optional().describe("Tax rate code."),
+            rate_id: z.number().optional().describe("Tax rate ID."),
+            shipping_tax_total: z
+              .string()
+              .optional()
+              .describe("Shipping tax total."),
+            tax_total: z
+              .string()
+              .optional()
+              .describe("Tax total (not including shipping taxes)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Tax lines data."),
+  })
+  .strict();
 
 export type OrderRefundsCreateResponse = z.infer<
   typeof orderRefundsCreateResponseSchema
@@ -2620,7 +4771,263 @@ export type OrderRefundsListQuery = z.infer<typeof orderRefundsListQuerySchema>;
 /**
  * GET /orders/{order_id}/refunds response body.
  */
-export const orderRefundsListResponseSchema = z.array(z.unknown());
+export const orderRefundsListResponseSchema = z.array(
+  z
+    .object({
+      amount: z.string().optional().describe("Refund amount."),
+      api_refund: z
+        .boolean()
+        .optional()
+        .describe(
+          "When true, the payment gateway API is used to generate the refund.",
+        ),
+      api_restock: z
+        .boolean()
+        .optional()
+        .describe("When true, refunded items are restocked."),
+      date_created: z
+        .string()
+        .optional()
+        .describe(
+          "The date the order refund was created, in the site's timezone.",
+        ),
+      date_created_gmt: z
+        .string()
+        .optional()
+        .describe("The date the order refund was created, as GMT."),
+      fee_lines: z
+        .array(
+          z
+            .object({
+              id: z.number().optional().describe("Item ID."),
+              meta_data: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Meta ID."),
+                      key: z.string().optional().describe("Meta key."),
+                      value: z.unknown().optional().describe("Meta value."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Meta data."),
+              name: z.unknown().optional().describe("Fee name."),
+              tax_class: z.string().optional().describe("Tax class of fee."),
+              tax_status: z
+                .enum(["taxable", "none"])
+                .optional()
+                .describe("Tax status of fee."),
+              taxes: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Tax rate ID."),
+                      subtotal: z.string().optional().describe("Tax subtotal."),
+                      total: z.string().optional().describe("Tax total."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Line taxes."),
+              total: z
+                .string()
+                .optional()
+                .describe("Line total (after discounts)."),
+              total_tax: z
+                .string()
+                .optional()
+                .describe("Line total tax (after discounts)."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("Fee lines data."),
+      id: z.number().optional().describe("Unique identifier for the resource."),
+      line_items: z
+        .array(
+          z
+            .object({
+              id: z.number().optional().describe("Item ID."),
+              meta_data: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Meta ID."),
+                      key: z.string().optional().describe("Meta key."),
+                      value: z.unknown().optional().describe("Meta value."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Meta data."),
+              name: z.unknown().optional().describe("Product name."),
+              price: z.number().optional().describe("Product price."),
+              product_id: z.unknown().optional().describe("Product ID."),
+              quantity: z.number().optional().describe("Quantity ordered."),
+              refund_total: z
+                .number()
+                .optional()
+                .describe(
+                  "Amount that will be refunded for this line item (excluding taxes).",
+                ),
+              sku: z.string().optional().describe("Product SKU."),
+              subtotal: z
+                .string()
+                .optional()
+                .describe("Line subtotal (before discounts)."),
+              subtotal_tax: z
+                .string()
+                .optional()
+                .describe("Line subtotal tax (before discounts)."),
+              tax_class: z
+                .string()
+                .optional()
+                .describe("Tax class of product."),
+              taxes: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Tax rate ID."),
+                      refund_total: z
+                        .number()
+                        .optional()
+                        .describe("Amount that will be refunded for this tax."),
+                      subtotal: z.string().optional().describe("Tax subtotal."),
+                      total: z.string().optional().describe("Tax total."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Line taxes."),
+              total: z
+                .string()
+                .optional()
+                .describe("Line total (after discounts)."),
+              total_tax: z
+                .string()
+                .optional()
+                .describe("Line total tax (after discounts)."),
+              variation_id: z
+                .number()
+                .optional()
+                .describe("Variation ID, if applicable."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("Line items data."),
+      meta_data: z
+        .array(
+          z
+            .object({
+              id: z.number().optional().describe("Meta ID."),
+              key: z.string().optional().describe("Meta key."),
+              value: z.unknown().optional().describe("Meta value."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("Meta data."),
+      reason: z.string().optional().describe("Reason for refund."),
+      refunded_by: z
+        .number()
+        .optional()
+        .describe("User ID of user who created the refund."),
+      refunded_payment: z
+        .boolean()
+        .optional()
+        .describe("If the payment was refunded via the API."),
+      shipping_lines: z
+        .array(
+          z
+            .object({
+              id: z.number().optional().describe("Item ID."),
+              instance_id: z
+                .string()
+                .optional()
+                .describe("Shipping instance ID."),
+              meta_data: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Meta ID."),
+                      key: z.string().optional().describe("Meta key."),
+                      value: z.unknown().optional().describe("Meta value."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Meta data."),
+              method_id: z.unknown().optional().describe("Shipping method ID."),
+              method_title: z
+                .unknown()
+                .optional()
+                .describe("Shipping method name."),
+              taxes: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Tax rate ID."),
+                      total: z.string().optional().describe("Tax total."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Line taxes."),
+              total: z
+                .string()
+                .optional()
+                .describe("Line total (after discounts)."),
+              total_tax: z
+                .string()
+                .optional()
+                .describe("Line total tax (after discounts)."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("Shipping lines data."),
+      tax_lines: z
+        .array(
+          z
+            .object({
+              compound: z
+                .boolean()
+                .optional()
+                .describe("Show if is a compound tax rate."),
+              id: z.number().optional().describe("Item ID."),
+              label: z.string().optional().describe("Tax rate label."),
+              meta_data: z
+                .array(
+                  z
+                    .object({
+                      id: z.number().optional().describe("Meta ID."),
+                      key: z.string().optional().describe("Meta key."),
+                      value: z.unknown().optional().describe("Meta value."),
+                    })
+                    .strict(),
+                )
+                .optional()
+                .describe("Meta data."),
+              rate_code: z.string().optional().describe("Tax rate code."),
+              rate_id: z.number().optional().describe("Tax rate ID."),
+              shipping_tax_total: z
+                .string()
+                .optional()
+                .describe("Shipping tax total."),
+              tax_total: z
+                .string()
+                .optional()
+                .describe("Tax total (not including shipping taxes)."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("Tax lines data."),
+    })
+    .strict(),
+);
 
 export type OrderRefundsListResponse = z.infer<
   typeof orderRefundsListResponseSchema
@@ -2676,7 +5083,14 @@ export type OrderSendEmailBody = z.infer<typeof orderSendEmailBodySchema>;
 /**
  * POST /orders/{id}/actions/send_email response body.
  */
-export const orderSendEmailResponseSchema = z.unknown();
+export const orderSendEmailResponseSchema = z
+  .object({
+    message: z
+      .string()
+      .optional()
+      .describe("A message indicating that the action completed successfully."),
+  })
+  .strict();
 
 export type OrderSendEmailResponse = z.infer<
   typeof orderSendEmailResponseSchema
@@ -2718,7 +5132,14 @@ export type OrderSendOrderDetailsBody = z.infer<
 /**
  * POST /orders/{id}/actions/send_order_details response body.
  */
-export const orderSendOrderDetailsResponseSchema = z.unknown();
+export const orderSendOrderDetailsResponseSchema = z
+  .object({
+    message: z
+      .string()
+      .optional()
+      .describe("A message indicating that the action completed successfully."),
+  })
+  .strict();
 
 export type OrderSendOrderDetailsResponse = z.infer<
   typeof orderSendOrderDetailsResponseSchema
@@ -3350,7 +5771,638 @@ export type OrderUpdateBody = z.infer<typeof orderUpdateBodySchema>;
 /**
  * PUT /orders/{id} response body.
  */
-export const orderUpdateResponseSchema = z.unknown();
+export const orderUpdateResponseSchema = z
+  .object({
+    billing: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z
+          .string()
+          .optional()
+          .describe("Country code in ISO 3166-1 alpha-2 format."),
+        email: z.string().nullable().optional().describe("Email address."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        phone: z.string().optional().describe("Phone number."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("Billing address.")
+      .strict()
+      .optional()
+      .describe("Billing address."),
+    cart_hash: z
+      .string()
+      .optional()
+      .describe("MD5 hash of cart items to ensure orders are not modified."),
+    cart_tax: z.string().optional().describe("Sum of line item taxes only."),
+    coupon_lines: z
+      .array(
+        z
+          .object({
+            code: z.unknown().optional().describe("Coupon code."),
+            discount: z.string().optional().describe("Discount total."),
+            discount_tax: z.string().optional().describe("Discount total tax."),
+            discount_type: z.string().optional().describe("Discount type."),
+            free_shipping: z
+              .boolean()
+              .optional()
+              .describe("Whether the coupon grants free shipping or not."),
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            nominal_amount: z
+              .number()
+              .optional()
+              .describe(
+                "Discount amount as defined in the coupon (absolute value or a percent, depending on the discount type).",
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Coupons line data."),
+    created_via: z
+      .string()
+      .optional()
+      .describe("Shows where the order was created."),
+    currency: z
+      .enum([
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AUD",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BRL",
+        "BSD",
+        "BTC",
+        "BTN",
+        "BWP",
+        "BYR",
+        "BYN",
+        "BZD",
+        "CAD",
+        "CDF",
+        "CHF",
+        "CLP",
+        "CNY",
+        "COP",
+        "CRC",
+        "CUC",
+        "CUP",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ERN",
+        "ETB",
+        "EUR",
+        "FJD",
+        "FKP",
+        "GBP",
+        "GEL",
+        "GGP",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HRK",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "IMP",
+        "INR",
+        "IQD",
+        "IRR",
+        "IRT",
+        "ISK",
+        "JEP",
+        "JMD",
+        "JOD",
+        "JPY",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KPW",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MRU",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "NZD",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PRB",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SDG",
+        "SEK",
+        "SGD",
+        "SHP",
+        "SLL",
+        "SOS",
+        "SRD",
+        "SSP",
+        "STN",
+        "SYP",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USD",
+        "UYU",
+        "UZS",
+        "VEF",
+        "VES",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XOF",
+        "XPF",
+        "YER",
+        "ZAR",
+        "ZMW",
+      ])
+      .optional()
+      .describe("Currency the order was created with, in ISO format."),
+    customer_id: z
+      .number()
+      .optional()
+      .describe("User ID who owns the order. 0 for guests."),
+    customer_ip_address: z
+      .string()
+      .optional()
+      .describe("Customer's IP address."),
+    customer_note: z
+      .string()
+      .optional()
+      .describe("Note left by customer during checkout."),
+    customer_user_agent: z
+      .string()
+      .optional()
+      .describe("User agent of the customer."),
+    date_completed: z
+      .string()
+      .optional()
+      .describe("The date the order was completed, in the site's timezone."),
+    date_completed_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was completed, as GMT."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the order was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the order was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was last modified, as GMT."),
+    date_paid: z
+      .string()
+      .optional()
+      .describe("The date the order was paid, in the site's timezone."),
+    date_paid_gmt: z
+      .string()
+      .optional()
+      .describe("The date the order was paid, as GMT."),
+    discount_tax: z
+      .string()
+      .optional()
+      .describe("Total discount tax amount for the order."),
+    discount_total: z
+      .string()
+      .optional()
+      .describe("Total discount amount for the order."),
+    fee_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Fee name."),
+            tax_class: z.string().optional().describe("Tax class of fee."),
+            tax_status: z
+              .enum(["taxable", "none"])
+              .optional()
+              .describe("Tax status of fee."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Fee lines data."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    is_editable: z
+      .boolean()
+      .optional()
+      .describe("Whether an order can be edited."),
+    line_items: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            image: z
+              .object({
+                id: z.number().optional().describe("Image ID."),
+                src: z.string().optional().describe("Image URL."),
+              })
+              .describe("Properties of the main product image.")
+              .strict()
+              .optional()
+              .describe("Properties of the main product image."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    display_key: z
+                      .string()
+                      .optional()
+                      .describe("Meta key for UI display."),
+                    display_value: z
+                      .string()
+                      .optional()
+                      .describe("Meta value for UI display."),
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            name: z.unknown().optional().describe("Product name."),
+            parent_name: z
+              .string()
+              .optional()
+              .describe("Parent product name if the product is a variation."),
+            price: z.number().optional().describe("Product price."),
+            product_id: z.unknown().optional().describe("Product ID."),
+            quantity: z.number().optional().describe("Quantity ordered."),
+            sku: z.string().optional().describe("Product SKU."),
+            subtotal: z
+              .string()
+              .optional()
+              .describe("Line subtotal (before discounts)."),
+            subtotal_tax: z
+              .string()
+              .optional()
+              .describe("Line subtotal tax (before discounts)."),
+            tax_class: z.string().optional().describe("Tax class of product."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    subtotal: z.string().optional().describe("Tax subtotal."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+            variation_id: z
+              .number()
+              .optional()
+              .describe("Variation ID, if applicable."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Line items data."),
+    manual_update: z
+      .boolean()
+      .optional()
+      .describe(
+        'Set the action as manual so that the order note registers as "added by user".',
+      ),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    needs_payment: z
+      .boolean()
+      .optional()
+      .describe(
+        "Whether an order needs payment, based on status and order total.",
+      ),
+    needs_processing: z
+      .boolean()
+      .optional()
+      .describe(
+        "Whether an order needs processing before it can be completed.",
+      ),
+    number: z.string().optional().describe("Order number."),
+    order_key: z.string().optional().describe("Order key."),
+    parent_id: z.number().optional().describe("Parent order ID."),
+    payment_method: z.string().optional().describe("Payment method ID."),
+    payment_method_title: z
+      .string()
+      .optional()
+      .describe("Payment method title."),
+    payment_url: z.string().optional().describe("Order payment URL."),
+    prices_include_tax: z
+      .boolean()
+      .optional()
+      .describe("True the prices included tax during checkout."),
+    refunds: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Refund ID."),
+            reason: z.string().optional().describe("Refund reason."),
+            total: z.string().optional().describe("Refund total."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of refunds."),
+    set_paid: z
+      .boolean()
+      .optional()
+      .describe(
+        "Define if the order is paid. It will set the status to processing and reduce stock items.",
+      ),
+    shipping: z
+      .object({
+        address_1: z.string().optional().describe("Address line 1"),
+        address_2: z.string().optional().describe("Address line 2"),
+        city: z.string().optional().describe("City name."),
+        company: z.string().optional().describe("Company name."),
+        country: z
+          .string()
+          .optional()
+          .describe("Country code in ISO 3166-1 alpha-2 format."),
+        first_name: z.string().optional().describe("First name."),
+        last_name: z.string().optional().describe("Last name."),
+        postcode: z.string().optional().describe("Postal code."),
+        state: z
+          .string()
+          .optional()
+          .describe("ISO code or name of the state, province or district."),
+      })
+      .describe("Shipping address.")
+      .strict()
+      .optional()
+      .describe("Shipping address."),
+    shipping_lines: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Item ID."),
+            instance_id: z
+              .string()
+              .optional()
+              .describe("Shipping instance ID."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            method_id: z.unknown().optional().describe("Shipping method ID."),
+            method_title: z
+              .unknown()
+              .optional()
+              .describe("Shipping method name."),
+            taxes: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Tax rate ID."),
+                    total: z.string().optional().describe("Tax total."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Line taxes."),
+            total: z
+              .string()
+              .optional()
+              .describe("Line total (after discounts)."),
+            total_tax: z
+              .string()
+              .optional()
+              .describe("Line total tax (after discounts)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Shipping lines data."),
+    shipping_tax: z
+      .string()
+      .optional()
+      .describe("Total shipping tax amount for the order."),
+    shipping_total: z
+      .string()
+      .optional()
+      .describe("Total shipping amount for the order."),
+    status: z
+      .enum([
+        "auto-draft",
+        "pending",
+        "processing",
+        "on-hold",
+        "completed",
+        "cancelled",
+        "refunded",
+        "failed",
+        "checkout-draft",
+      ])
+      .optional()
+      .describe("Order status."),
+    tax_lines: z
+      .array(
+        z
+          .object({
+            compound: z
+              .boolean()
+              .optional()
+              .describe("Show if is a compound tax rate."),
+            id: z.number().optional().describe("Item ID."),
+            label: z.string().optional().describe("Tax rate label."),
+            meta_data: z
+              .array(
+                z
+                  .object({
+                    id: z.number().optional().describe("Meta ID."),
+                    key: z.string().optional().describe("Meta key."),
+                    value: z.unknown().optional().describe("Meta value."),
+                  })
+                  .strict(),
+              )
+              .optional()
+              .describe("Meta data."),
+            rate_code: z.string().optional().describe("Tax rate code."),
+            rate_id: z.number().optional().describe("Tax rate ID."),
+            shipping_tax_total: z
+              .string()
+              .optional()
+              .describe("Shipping tax total."),
+            tax_total: z
+              .string()
+              .optional()
+              .describe("Tax total (not including shipping taxes)."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Tax lines data."),
+    total: z.string().optional().describe("Grand total."),
+    total_tax: z.string().optional().describe("Sum of all taxes."),
+    transaction_id: z.string().optional().describe("Unique transaction ID."),
+    version: z
+      .string()
+      .optional()
+      .describe("Version of WooCommerce which last updated the order."),
+  })
+  .strict();
 
 export type OrderUpdateResponse = z.infer<typeof orderUpdateResponseSchema>;
 

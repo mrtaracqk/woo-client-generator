@@ -24,9 +24,6 @@ const SUPPORTED_SCHEMA_TYPES = new Set([
 export const renderWooSchemaTypeScript = (
   schema: Record<string, unknown> | undefined,
   path = "$",
-  options?: {
-    warnOnMissingSchema?: boolean;
-  },
 ): {
   typeScript: string;
   warnings: WooSchemaToTypeScriptWarning[];
@@ -34,15 +31,12 @@ export const renderWooSchemaTypeScript = (
   if (schema === undefined) {
     return {
       typeScript: "unknown",
-      warnings:
-        options?.warnOnMissingSchema === false
-          ? []
-          : [
-              {
-                message: "Schema is missing or invalid; using unknown.",
-                path,
-              },
-            ],
+      warnings: [
+        {
+          message: "Schema is missing or invalid; using unknown.",
+          path,
+        },
+      ],
     };
   }
 
@@ -105,11 +99,18 @@ const renderSchema = (
     return renderByType(schema, rawType, state, path);
   }
 
-  if (schema.properties !== undefined || schema.additionalProperties !== undefined) {
+  if (
+    schema.properties !== undefined ||
+    schema.additionalProperties !== undefined
+  ) {
     return renderObjectSchema(schema, state, path);
   }
 
-  addWarning(state, path, "Schema does not declare a supported type; using unknown.");
+  addWarning(
+    state,
+    path,
+    "Schema does not declare a supported type; using unknown.",
+  );
   return "unknown";
 };
 
@@ -271,17 +272,19 @@ const renderObjectSchema = (
   }
 
   const required = new Set(readRequiredPropertyNames(schema.required));
-  const members = Object.entries(properties).map(([propertyName, propertySchema]) => {
-    const renderedPropertyName = renderPropertyName(propertyName);
-    const optionalMarker = required.has(propertyName) ? "" : "?";
-    const renderedPropertyType = renderSchema(
-      asRecord(propertySchema),
-      state,
-      `${path}.properties.${propertyName}`,
-    );
+  const members = Object.entries(properties).map(
+    ([propertyName, propertySchema]) => {
+      const renderedPropertyName = renderPropertyName(propertyName);
+      const optionalMarker = required.has(propertyName) ? "" : "?";
+      const renderedPropertyType = renderSchema(
+        asRecord(propertySchema),
+        state,
+        `${path}.properties.${propertyName}`,
+      );
 
-    return `${renderedPropertyName}${optionalMarker}: ${renderedPropertyType}`;
-  });
+      return `${renderedPropertyName}${optionalMarker}: ${renderedPropertyType}`;
+    },
+  );
 
   if (additionalProperties === true) {
     members.push("[key: string]: unknown");
@@ -293,7 +296,10 @@ const renderObjectSchema = (
         `${path}.additionalProperties`,
       )}`,
     );
-  } else if (additionalProperties !== undefined && additionalProperties !== false) {
+  } else if (
+    additionalProperties !== undefined &&
+    additionalProperties !== false
+  ) {
     addWarning(
       state,
       `${path}.additionalProperties`,

@@ -255,7 +255,9 @@ describe("woo-sdk-manifest", () => {
     });
 
     expect(
-      manifest.operations.find((operation) => operation.internalKey === "PRODUCT_GET"),
+      manifest.operations.find(
+        (operation) => operation.internalKey === "PRODUCT_GET",
+      ),
     ).toMatchObject({
       functionName: "getProduct",
       pathParamsTypeName: "ProductGetPathParams",
@@ -330,6 +332,53 @@ describe("woo-sdk-manifest", () => {
       functionName: "putProductBatchCustom",
       routeTemplate: "/products/batch",
       typeBaseName: "ProductPutBatchCustom",
+    });
+  });
+
+  it("never derives a read operation's response schema from the list operation", () => {
+    const snapshot: WooRestSnapshot = {
+      source: {
+        namespace: "wc/v3",
+        wooCommerceVersion: "10.5.1",
+        wooCommerceVersionSource: "readme.txt",
+        wordpressVersion: "6.9.1",
+      },
+      routes: [
+        {
+          route: "/wc/v3/products",
+          methods: [
+            {
+              method: "GET",
+              args: {},
+              schema: {
+                title: "product",
+                type: "object",
+              },
+            },
+          ],
+        },
+        {
+          route: "/wc/v3/products/(?P<id>[\\d]+)",
+          methods: [
+            {
+              method: "GET",
+              args: {},
+            },
+          ],
+        },
+      ],
+    };
+
+    const manifest = buildWooSdkManifest(snapshot);
+    const productGet = manifest.operations.find(
+      (operation) => operation.internalKey === "PRODUCT_GET",
+    );
+
+    expect(productGet).toBeDefined();
+    expect(productGet?.responseSchema).toEqual({
+      type: "mixed",
+      description:
+        "Response schema was not present in the Woo REST snapshot for this operation.",
     });
   });
 });

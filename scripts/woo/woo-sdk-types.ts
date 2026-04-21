@@ -1,8 +1,5 @@
 import path from "node:path";
-import {
-  renderWooSchemaZod,
-  WooSchemaToZodWarning,
-} from "./woo-schema-to-zod";
+import { renderWooSchemaZod, WooSchemaToZodWarning } from "./woo-schema-to-zod";
 import {
   renderWooSchemaTypeScript,
   WooSchemaToTypeScriptWarning,
@@ -24,6 +21,8 @@ export interface GeneratedWooSdkTypeArtifacts {
 export const buildWooSdkTypeArtifacts = async (
   manifest: WooSdkManifest,
 ): Promise<GeneratedWooSdkTypeArtifacts> => {
+  assertOperationsHaveResponseSchemas(manifest.operations);
+
   const warnings: (WooSchemaToTypeScriptWarning | WooSchemaToZodWarning)[] = [];
   const operationGroups = groupOperationsByResource(manifest.operations);
   const modelFiles = await Promise.all(
@@ -141,6 +140,29 @@ const typeNameToSchemaVarName = (typeName: string): string => {
   return `${first.toLowerCase()}${rest}Schema`;
 };
 
+const assertOperationsHaveResponseSchemas = (
+  operations: WooSdkOperation[],
+): void => {
+  const missing = operations.filter(
+    (operation) => operation.responseSchema === undefined,
+  );
+
+  if (missing.length === 0) {
+    return;
+  }
+
+  const details = missing
+    .map(
+      (operation) =>
+        `  - ${operation.internalKey} (${operation.method} ${operation.routeTemplate})`,
+    )
+    .join("\n");
+
+  throw new Error(
+    `SDK type generation requires a response schema for every operation. Missing schema for ${missing.length} operation(s):\n${details}`,
+  );
+};
+
 const buildTypeAliasDeclaration = ({
   description,
   path,
@@ -157,17 +179,14 @@ const buildTypeAliasDeclaration = ({
   wrapAsArray?: boolean;
 }): string => {
   const schemaVarName = typeNameToSchemaVarName(typeName);
-  const warnOpt = { warnOnMissingSchema: schema !== undefined };
 
-  const renderedTs = renderWooSchemaTypeScript(schema, path, warnOpt);
+  const renderedTs = renderWooSchemaTypeScript(schema, path);
   warnings.push(...renderedTs.warnings);
 
-  const renderedZod = renderWooSchemaZod(schema, path, warnOpt);
+  const renderedZod = renderWooSchemaZod(schema, path);
   warnings.push(...renderedZod.warnings);
 
-  const zodExpr = wrapAsArray
-    ? `z.array(${renderedZod.zod})`
-    : renderedZod.zod;
+  const zodExpr = wrapAsArray ? `z.array(${renderedZod.zod})` : renderedZod.zod;
 
   return `/**
  * ${escapeComment(description)}

@@ -36,7 +36,51 @@ export type WebhookDeleteQuery = z.infer<typeof webhookDeleteQuerySchema>;
 /**
  * DELETE /webhooks/{id} response body.
  */
-export const webhookDeleteResponseSchema = z.unknown();
+export const webhookDeleteResponseSchema = z
+  .object({
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the webhook was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the webhook was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the webhook was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the webhook was last modified, as GMT."),
+    delivery_url: z
+      .string()
+      .optional()
+      .describe("The URL where the webhook payload is delivered."),
+    event: z.string().optional().describe("Webhook event."),
+    hooks: z
+      .array(z.string())
+      .optional()
+      .describe("WooCommerce action names associated with the webhook."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("A friendly name for the webhook."),
+    resource: z.string().optional().describe("Webhook resource."),
+    secret: z
+      .string()
+      .optional()
+      .describe(
+        "Secret key used to generate a hash of the delivered webhook and provided in the request headers. This will default to a MD5 hash from the current user's ID|username if not provided.",
+      ),
+    status: z
+      .enum(["active", "paused", "disabled"])
+      .optional()
+      .describe("Webhook status."),
+    topic: z.string().optional().describe("Webhook topic."),
+  })
+  .strict();
 
 export type WebhookDeleteResponse = z.infer<typeof webhookDeleteResponseSchema>;
 
@@ -150,7 +194,51 @@ export type WebhookPostCustomBody = z.infer<typeof webhookPostCustomBodySchema>;
 /**
  * POST /webhooks/{id} response body.
  */
-export const webhookPostCustomResponseSchema = z.unknown();
+export const webhookPostCustomResponseSchema = z
+  .object({
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the webhook was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the webhook was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the webhook was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the webhook was last modified, as GMT."),
+    delivery_url: z
+      .string()
+      .optional()
+      .describe("The URL where the webhook payload is delivered."),
+    event: z.string().optional().describe("Webhook event."),
+    hooks: z
+      .array(z.string())
+      .optional()
+      .describe("WooCommerce action names associated with the webhook."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("A friendly name for the webhook."),
+    resource: z.string().optional().describe("Webhook resource."),
+    secret: z
+      .string()
+      .optional()
+      .describe(
+        "Secret key used to generate a hash of the delivered webhook and provided in the request headers. This will default to a MD5 hash from the current user's ID|username if not provided.",
+      ),
+    status: z
+      .enum(["active", "paused", "disabled"])
+      .optional()
+      .describe("Webhook status."),
+    topic: z.string().optional().describe("Webhook topic."),
+  })
+  .strict();
 
 export type WebhookPostCustomResponse = z.infer<
   typeof webhookPostCustomResponseSchema
@@ -240,7 +328,51 @@ export type WebhookUpdateBody = z.infer<typeof webhookUpdateBodySchema>;
 /**
  * PUT /webhooks/{id} response body.
  */
-export const webhookUpdateResponseSchema = z.unknown();
+export const webhookUpdateResponseSchema = z
+  .object({
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the webhook was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the webhook was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the webhook was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the webhook was last modified, as GMT."),
+    delivery_url: z
+      .string()
+      .optional()
+      .describe("The URL where the webhook payload is delivered."),
+    event: z.string().optional().describe("Webhook event."),
+    hooks: z
+      .array(z.string())
+      .optional()
+      .describe("WooCommerce action names associated with the webhook."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("A friendly name for the webhook."),
+    resource: z.string().optional().describe("Webhook resource."),
+    secret: z
+      .string()
+      .optional()
+      .describe(
+        "Secret key used to generate a hash of the delivered webhook and provided in the request headers. This will default to a MD5 hash from the current user's ID|username if not provided.",
+      ),
+    status: z
+      .enum(["active", "paused", "disabled"])
+      .optional()
+      .describe("Webhook status."),
+    topic: z.string().optional().describe("Webhook topic."),
+  })
+  .strict();
 
 export type WebhookUpdateResponse = z.infer<typeof webhookUpdateResponseSchema>;
 

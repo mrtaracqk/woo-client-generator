@@ -38,7 +38,13 @@ export type ShippingZoneDeleteQuery = z.infer<
 /**
  * DELETE /shipping/zones/{id} response body.
  */
-export const shippingZoneDeleteResponseSchema = z.unknown();
+export const shippingZoneDeleteResponseSchema = z
+  .object({
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Shipping zone name."),
+    order: z.number().optional().describe("Shipping zone order."),
+  })
+  .strict();
 
 export type ShippingZoneDeleteResponse = z.infer<
   typeof shippingZoneDeleteResponseSchema
@@ -101,7 +107,15 @@ export type ShippingZoneLocationPutCustomBody = z.infer<
 /**
  * PUT /shipping/zones/{id}/locations response body.
  */
-export const shippingZoneLocationPutCustomResponseSchema = z.unknown();
+export const shippingZoneLocationPutCustomResponseSchema = z
+  .object({
+    code: z.string().optional().describe("Shipping zone location code."),
+    type: z
+      .enum(["postcode", "state", "country", "continent"])
+      .optional()
+      .describe("Shipping zone location type."),
+  })
+  .strict();
 
 export type ShippingZoneLocationPutCustomResponse = z.infer<
   typeof shippingZoneLocationPutCustomResponseSchema
@@ -138,7 +152,15 @@ export type ShippingZoneLocationsCreateBody = z.infer<
 /**
  * POST /shipping/zones/{id}/locations response body.
  */
-export const shippingZoneLocationsCreateResponseSchema = z.unknown();
+export const shippingZoneLocationsCreateResponseSchema = z
+  .object({
+    code: z.string().optional().describe("Shipping zone location code."),
+    type: z
+      .enum(["postcode", "state", "country", "continent"])
+      .optional()
+      .describe("Shipping zone location type."),
+  })
+  .strict();
 
 export type ShippingZoneLocationsCreateResponse = z.infer<
   typeof shippingZoneLocationsCreateResponseSchema
@@ -158,7 +180,17 @@ export type ShippingZoneLocationsListPathParams = z.infer<
 /**
  * GET /shipping/zones/{id}/locations response body.
  */
-export const shippingZoneLocationsListResponseSchema = z.array(z.unknown());
+export const shippingZoneLocationsListResponseSchema = z.array(
+  z
+    .object({
+      code: z.string().optional().describe("Shipping zone location code."),
+      type: z
+        .enum(["postcode", "state", "country", "continent"])
+        .optional()
+        .describe("Shipping zone location type."),
+    })
+    .strict(),
+);
 
 export type ShippingZoneLocationsListResponse = z.infer<
   typeof shippingZoneLocationsListResponseSchema
@@ -194,7 +226,80 @@ export type ShippingZoneMethodDeleteQuery = z.infer<
 /**
  * DELETE /shipping/zones/{zone_id}/methods/{instance_id} response body.
  */
-export const shippingZoneMethodDeleteResponseSchema = z.unknown();
+export const shippingZoneMethodDeleteResponseSchema = z
+  .object({
+    enabled: z.boolean().optional().describe("Shipping method enabled status."),
+    id: z.number().optional().describe("Shipping method instance ID."),
+    instance_id: z.number().optional().describe("Shipping method instance ID."),
+    method_description: z
+      .string()
+      .optional()
+      .describe("Shipping method description."),
+    method_id: z.string().optional().describe("Shipping method ID."),
+    method_title: z.string().optional().describe("Shipping method title."),
+    order: z.number().optional().describe("Shipping method sort order."),
+    settings: z
+      .object({
+        default: z
+          .string()
+          .optional()
+          .describe("Default value for the setting."),
+        description: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable description for the setting used in interfaces.",
+          ),
+        id: z
+          .string()
+          .optional()
+          .describe("A unique identifier for the setting."),
+        label: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable label for the setting used in interfaces.",
+          ),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text to be displayed in text inputs."),
+        tip: z
+          .string()
+          .optional()
+          .describe(
+            "Additional help text shown to the user about the setting.",
+          ),
+        type: z
+          .enum([
+            "text",
+            "email",
+            "number",
+            "color",
+            "password",
+            "textarea",
+            "select",
+            "multiselect",
+            "radio",
+            "image_width",
+            "checkbox",
+            "class",
+            "order",
+          ])
+          .optional()
+          .describe("Type of setting."),
+        value: z.string().optional().describe("Setting value."),
+      })
+      .describe("Shipping method settings.")
+      .strict()
+      .optional()
+      .describe("Shipping method settings."),
+    title: z
+      .string()
+      .optional()
+      .describe("Shipping method customer facing title."),
+  })
+  .strict();
 
 export type ShippingZoneMethodDeleteResponse = z.infer<
   typeof shippingZoneMethodDeleteResponseSchema
@@ -214,7 +319,80 @@ export type ShippingZoneMethodGetPathParams = z.infer<
 /**
  * GET /shipping/zones/{zone_id}/methods/{instance_id} response body.
  */
-export const shippingZoneMethodGetResponseSchema = z.unknown();
+export const shippingZoneMethodGetResponseSchema = z
+  .object({
+    enabled: z.boolean().optional().describe("Shipping method enabled status."),
+    id: z.number().optional().describe("Shipping method instance ID."),
+    instance_id: z.number().optional().describe("Shipping method instance ID."),
+    method_description: z
+      .string()
+      .optional()
+      .describe("Shipping method description."),
+    method_id: z.string().optional().describe("Shipping method ID."),
+    method_title: z.string().optional().describe("Shipping method title."),
+    order: z.number().optional().describe("Shipping method sort order."),
+    settings: z
+      .object({
+        default: z
+          .string()
+          .optional()
+          .describe("Default value for the setting."),
+        description: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable description for the setting used in interfaces.",
+          ),
+        id: z
+          .string()
+          .optional()
+          .describe("A unique identifier for the setting."),
+        label: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable label for the setting used in interfaces.",
+          ),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text to be displayed in text inputs."),
+        tip: z
+          .string()
+          .optional()
+          .describe(
+            "Additional help text shown to the user about the setting.",
+          ),
+        type: z
+          .enum([
+            "text",
+            "email",
+            "number",
+            "color",
+            "password",
+            "textarea",
+            "select",
+            "multiselect",
+            "radio",
+            "image_width",
+            "checkbox",
+            "class",
+            "order",
+          ])
+          .optional()
+          .describe("Type of setting."),
+        value: z.string().optional().describe("Setting value."),
+      })
+      .describe("Shipping method settings.")
+      .strict()
+      .optional()
+      .describe("Shipping method settings."),
+    title: z
+      .string()
+      .optional()
+      .describe("Shipping method customer facing title."),
+  })
+  .strict();
 
 export type ShippingZoneMethodGetResponse = z.infer<
   typeof shippingZoneMethodGetResponseSchema
@@ -304,7 +482,80 @@ export type ShippingZoneMethodPostCustomBody = z.infer<
 /**
  * POST /shipping/zones/{zone_id}/methods/{instance_id} response body.
  */
-export const shippingZoneMethodPostCustomResponseSchema = z.unknown();
+export const shippingZoneMethodPostCustomResponseSchema = z
+  .object({
+    enabled: z.boolean().optional().describe("Shipping method enabled status."),
+    id: z.number().optional().describe("Shipping method instance ID."),
+    instance_id: z.number().optional().describe("Shipping method instance ID."),
+    method_description: z
+      .string()
+      .optional()
+      .describe("Shipping method description."),
+    method_id: z.string().optional().describe("Shipping method ID."),
+    method_title: z.string().optional().describe("Shipping method title."),
+    order: z.number().optional().describe("Shipping method sort order."),
+    settings: z
+      .object({
+        default: z
+          .string()
+          .optional()
+          .describe("Default value for the setting."),
+        description: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable description for the setting used in interfaces.",
+          ),
+        id: z
+          .string()
+          .optional()
+          .describe("A unique identifier for the setting."),
+        label: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable label for the setting used in interfaces.",
+          ),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text to be displayed in text inputs."),
+        tip: z
+          .string()
+          .optional()
+          .describe(
+            "Additional help text shown to the user about the setting.",
+          ),
+        type: z
+          .enum([
+            "text",
+            "email",
+            "number",
+            "color",
+            "password",
+            "textarea",
+            "select",
+            "multiselect",
+            "radio",
+            "image_width",
+            "checkbox",
+            "class",
+            "order",
+          ])
+          .optional()
+          .describe("Type of setting."),
+        value: z.string().optional().describe("Setting value."),
+      })
+      .describe("Shipping method settings.")
+      .strict()
+      .optional()
+      .describe("Shipping method settings."),
+    title: z
+      .string()
+      .optional()
+      .describe("Shipping method customer facing title."),
+  })
+  .strict();
 
 export type ShippingZoneMethodPostCustomResponse = z.infer<
   typeof shippingZoneMethodPostCustomResponseSchema
@@ -394,7 +645,80 @@ export type ShippingZoneMethodUpdateBody = z.infer<
 /**
  * PUT /shipping/zones/{zone_id}/methods/{instance_id} response body.
  */
-export const shippingZoneMethodUpdateResponseSchema = z.unknown();
+export const shippingZoneMethodUpdateResponseSchema = z
+  .object({
+    enabled: z.boolean().optional().describe("Shipping method enabled status."),
+    id: z.number().optional().describe("Shipping method instance ID."),
+    instance_id: z.number().optional().describe("Shipping method instance ID."),
+    method_description: z
+      .string()
+      .optional()
+      .describe("Shipping method description."),
+    method_id: z.string().optional().describe("Shipping method ID."),
+    method_title: z.string().optional().describe("Shipping method title."),
+    order: z.number().optional().describe("Shipping method sort order."),
+    settings: z
+      .object({
+        default: z
+          .string()
+          .optional()
+          .describe("Default value for the setting."),
+        description: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable description for the setting used in interfaces.",
+          ),
+        id: z
+          .string()
+          .optional()
+          .describe("A unique identifier for the setting."),
+        label: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable label for the setting used in interfaces.",
+          ),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text to be displayed in text inputs."),
+        tip: z
+          .string()
+          .optional()
+          .describe(
+            "Additional help text shown to the user about the setting.",
+          ),
+        type: z
+          .enum([
+            "text",
+            "email",
+            "number",
+            "color",
+            "password",
+            "textarea",
+            "select",
+            "multiselect",
+            "radio",
+            "image_width",
+            "checkbox",
+            "class",
+            "order",
+          ])
+          .optional()
+          .describe("Type of setting."),
+        value: z.string().optional().describe("Setting value."),
+      })
+      .describe("Shipping method settings.")
+      .strict()
+      .optional()
+      .describe("Shipping method settings."),
+    title: z
+      .string()
+      .optional()
+      .describe("Shipping method customer facing title."),
+  })
+  .strict();
 
 export type ShippingZoneMethodUpdateResponse = z.infer<
   typeof shippingZoneMethodUpdateResponseSchema
@@ -485,7 +809,80 @@ export type ShippingZoneMethodsCreateBody = z.infer<
 /**
  * POST /shipping/zones/{zone_id}/methods response body.
  */
-export const shippingZoneMethodsCreateResponseSchema = z.unknown();
+export const shippingZoneMethodsCreateResponseSchema = z
+  .object({
+    enabled: z.boolean().optional().describe("Shipping method enabled status."),
+    id: z.number().optional().describe("Shipping method instance ID."),
+    instance_id: z.number().optional().describe("Shipping method instance ID."),
+    method_description: z
+      .string()
+      .optional()
+      .describe("Shipping method description."),
+    method_id: z.string().optional().describe("Shipping method ID."),
+    method_title: z.string().optional().describe("Shipping method title."),
+    order: z.number().optional().describe("Shipping method sort order."),
+    settings: z
+      .object({
+        default: z
+          .string()
+          .optional()
+          .describe("Default value for the setting."),
+        description: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable description for the setting used in interfaces.",
+          ),
+        id: z
+          .string()
+          .optional()
+          .describe("A unique identifier for the setting."),
+        label: z
+          .string()
+          .optional()
+          .describe(
+            "A human readable label for the setting used in interfaces.",
+          ),
+        placeholder: z
+          .string()
+          .optional()
+          .describe("Placeholder text to be displayed in text inputs."),
+        tip: z
+          .string()
+          .optional()
+          .describe(
+            "Additional help text shown to the user about the setting.",
+          ),
+        type: z
+          .enum([
+            "text",
+            "email",
+            "number",
+            "color",
+            "password",
+            "textarea",
+            "select",
+            "multiselect",
+            "radio",
+            "image_width",
+            "checkbox",
+            "class",
+            "order",
+          ])
+          .optional()
+          .describe("Type of setting."),
+        value: z.string().optional().describe("Setting value."),
+      })
+      .describe("Shipping method settings.")
+      .strict()
+      .optional()
+      .describe("Shipping method settings."),
+    title: z
+      .string()
+      .optional()
+      .describe("Shipping method customer facing title."),
+  })
+  .strict();
 
 export type ShippingZoneMethodsCreateResponse = z.infer<
   typeof shippingZoneMethodsCreateResponseSchema
@@ -505,7 +902,88 @@ export type ShippingZoneMethodsListPathParams = z.infer<
 /**
  * GET /shipping/zones/{zone_id}/methods response body.
  */
-export const shippingZoneMethodsListResponseSchema = z.array(z.unknown());
+export const shippingZoneMethodsListResponseSchema = z.array(
+  z
+    .object({
+      enabled: z
+        .boolean()
+        .optional()
+        .describe("Shipping method enabled status."),
+      id: z.number().optional().describe("Shipping method instance ID."),
+      instance_id: z
+        .number()
+        .optional()
+        .describe("Shipping method instance ID."),
+      method_description: z
+        .string()
+        .optional()
+        .describe("Shipping method description."),
+      method_id: z.string().optional().describe("Shipping method ID."),
+      method_title: z.string().optional().describe("Shipping method title."),
+      order: z.number().optional().describe("Shipping method sort order."),
+      settings: z
+        .object({
+          default: z
+            .string()
+            .optional()
+            .describe("Default value for the setting."),
+          description: z
+            .string()
+            .optional()
+            .describe(
+              "A human readable description for the setting used in interfaces.",
+            ),
+          id: z
+            .string()
+            .optional()
+            .describe("A unique identifier for the setting."),
+          label: z
+            .string()
+            .optional()
+            .describe(
+              "A human readable label for the setting used in interfaces.",
+            ),
+          placeholder: z
+            .string()
+            .optional()
+            .describe("Placeholder text to be displayed in text inputs."),
+          tip: z
+            .string()
+            .optional()
+            .describe(
+              "Additional help text shown to the user about the setting.",
+            ),
+          type: z
+            .enum([
+              "text",
+              "email",
+              "number",
+              "color",
+              "password",
+              "textarea",
+              "select",
+              "multiselect",
+              "radio",
+              "image_width",
+              "checkbox",
+              "class",
+              "order",
+            ])
+            .optional()
+            .describe("Type of setting."),
+          value: z.string().optional().describe("Setting value."),
+        })
+        .describe("Shipping method settings.")
+        .strict()
+        .optional()
+        .describe("Shipping method settings."),
+      title: z
+        .string()
+        .optional()
+        .describe("Shipping method customer facing title."),
+    })
+    .strict(),
+);
 
 export type ShippingZoneMethodsListResponse = z.infer<
   typeof shippingZoneMethodsListResponseSchema
@@ -539,7 +1017,13 @@ export type ShippingZonePostCustomBody = z.infer<
 /**
  * POST /shipping/zones/{id} response body.
  */
-export const shippingZonePostCustomResponseSchema = z.unknown();
+export const shippingZonePostCustomResponseSchema = z
+  .object({
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Shipping zone name."),
+    order: z.number().optional().describe("Shipping zone order."),
+  })
+  .strict();
 
 export type ShippingZonePostCustomResponse = z.infer<
   typeof shippingZonePostCustomResponseSchema
@@ -573,7 +1057,13 @@ export type ShippingZoneUpdateBody = z.infer<
 /**
  * PUT /shipping/zones/{id} response body.
  */
-export const shippingZoneUpdateResponseSchema = z.unknown();
+export const shippingZoneUpdateResponseSchema = z
+  .object({
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Shipping zone name."),
+    order: z.number().optional().describe("Shipping zone order."),
+  })
+  .strict();
 
 export type ShippingZoneUpdateResponse = z.infer<
   typeof shippingZoneUpdateResponseSchema

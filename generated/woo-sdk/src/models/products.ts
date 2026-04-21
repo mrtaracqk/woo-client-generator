@@ -50,7 +50,27 @@ export type ProductAttributePostCustomBody = z.infer<
 /**
  * POST /products/attributes/{id} response body.
  */
-export const productAttributePostCustomResponseSchema = z.unknown();
+export const productAttributePostCustomResponseSchema = z
+  .object({
+    has_archives: z
+      .boolean()
+      .optional()
+      .describe("Enable/Disable attribute archives."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Attribute name."),
+    order_by: z
+      .enum(["menu_order", "name", "name_num", "id"])
+      .optional()
+      .describe("Default sort order."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+    type: z.enum(["select"]).optional().describe("Type of attribute."),
+  })
+  .strict();
 
 export type ProductAttributePostCustomResponse = z.infer<
   typeof productAttributePostCustomResponseSchema
@@ -149,7 +169,30 @@ export type ProductAttributeTermPostCustomBody = z.infer<
 /**
  * POST /products/attributes/{attribute_id}/terms/{id} response body.
  */
-export const productAttributeTermPostCustomResponseSchema = z.unknown();
+export const productAttributeTermPostCustomResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Term name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductAttributeTermPostCustomResponse = z.infer<
   typeof productAttributeTermPostCustomResponseSchema
@@ -196,7 +239,22 @@ export type ProductAttributeTermPutBatchCustomBody = z.infer<
 /**
  * PUT /products/attributes/{attribute_id}/terms/batch response body.
  */
-export const productAttributeTermPutBatchCustomResponseSchema = z.unknown();
+export const productAttributeTermPutBatchCustomResponseSchema = z
+  .object({
+    create: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of created resources."),
+    delete: z
+      .array(z.number())
+      .optional()
+      .describe("List of delete resources."),
+    update: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of updated resources."),
+  })
+  .strict();
 
 export type ProductAttributeTermPutBatchCustomResponse = z.infer<
   typeof productAttributeTermPutBatchCustomResponseSchema
@@ -284,7 +342,67 @@ export type ProductBrandPostCustomBody = z.infer<
 /**
  * POST /products/brands/{id} response body.
  */
-export const productBrandPostCustomResponseSchema = z.unknown();
+export const productBrandPostCustomResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    display: z
+      .enum(["default", "products", "subcategories", "both"])
+      .optional()
+      .describe("Category archive display type."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Image data.")
+      .strict()
+      .optional()
+      .describe("Image data."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Category name."),
+    parent: z
+      .number()
+      .optional()
+      .describe("The ID for the parent of the resource."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductBrandPostCustomResponse = z.infer<
   typeof productBrandPostCustomResponseSchema
@@ -464,7 +582,67 @@ export type ProductCategoryPostCustomBody = z.infer<
 /**
  * POST /products/categories/{id} response body.
  */
-export const productCategoryPostCustomResponseSchema = z.unknown();
+export const productCategoryPostCustomResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    display: z
+      .enum(["default", "products", "subcategories", "both"])
+      .optional()
+      .describe("Category archive display type."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Image data.")
+      .strict()
+      .optional()
+      .describe("Image data."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Category name."),
+    parent: z
+      .number()
+      .optional()
+      .describe("The ID for the parent of the resource."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductCategoryPostCustomResponse = z.infer<
   typeof productCategoryPostCustomResponseSchema
@@ -590,7 +768,352 @@ export type ProductDeleteQuery = z.infer<typeof productDeleteQuerySchema>;
 /**
  * DELETE /products/{id} response body.
  */
-export const productDeleteResponseSchema = z.unknown();
+export const productDeleteResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            options: z
+              .array(z.string())
+              .optional()
+              .describe("List of available term names of the attribute."),
+            position: z.number().optional().describe("Attribute position."),
+            variation: z
+              .boolean()
+              .optional()
+              .describe("Define if the attribute can be used as variation."),
+            visible: z
+              .boolean()
+              .optional()
+              .describe(
+                'Define if the attribute is visible on the "Additional information" tab in the product\'s page.',
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    average_rating: z.string().optional().describe("Reviews average rating."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    brands: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Brand ID."),
+            name: z.string().optional().describe("Brand name."),
+            slug: z.string().optional().describe("Brand slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of brands."),
+    button_text: z
+      .string()
+      .optional()
+      .describe("Product external button text. Only for external products."),
+    catalog_visibility: z
+      .enum(["visible", "catalog", "search", "hidden"])
+      .optional()
+      .describe("Catalog visibility."),
+    categories: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Category ID."),
+            name: z.string().optional().describe("Category name."),
+            slug: z.string().optional().describe("Category slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of categories."),
+    cross_sell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of cross-sell products IDs."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the product was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the product was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was last modified, as GMT."),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    default_attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Defaults variation attributes."),
+    description: z.string().optional().describe("Product description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Product height (in)."),
+        length: z.string().optional().describe("Product length (in)."),
+        width: z.string().optional().describe("Product width (in)."),
+      })
+      .describe("Product dimensions.")
+      .strict()
+      .optional()
+      .describe("Product dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the product is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    external_url: z
+      .string()
+      .optional()
+      .describe("Product external URL. Only for external products."),
+    featured: z.boolean().optional().describe("Featured product."),
+    generated_slug: z
+      .string()
+      .optional()
+      .describe("Slug automatically generated from the product name."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    grouped_products: z
+      .array(z.number())
+      .optional()
+      .describe("List of grouped products ID."),
+    has_options: z
+      .boolean()
+      .optional()
+      .describe(
+        "Shows if the product needs to be configured before it can be bought.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    images: z
+      .array(
+        z
+          .object({
+            alt: z.string().optional().describe("Image alternative text."),
+            date_created: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was created, in the site's timezone.",
+              ),
+            date_created_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was created, as GMT."),
+            date_modified: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was last modified, in the site's timezone.",
+              ),
+            date_modified_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was last modified, as GMT."),
+            id: z.number().optional().describe("Image ID."),
+            name: z.string().optional().describe("Image name."),
+            src: z.string().optional().describe("Image URL."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of images."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the product."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at product level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    name: z.string().optional().describe("Product name."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on sale."),
+    parent_id: z.number().optional().describe("Product parent ID."),
+    permalink: z.string().optional().describe("Product URL."),
+    permalink_template: z
+      .string()
+      .optional()
+      .describe("Permalink template for the product."),
+    post_password: z.string().optional().describe("Post password."),
+    price: z.string().optional().describe("Current product price."),
+    price_html: z.string().optional().describe("Price formatted in HTML."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product can be bought."),
+    purchase_note: z
+      .string()
+      .optional()
+      .describe("Optional note to send the customer after purchase."),
+    rating_count: z
+      .number()
+      .optional()
+      .describe("Amount of reviews that the product have."),
+    regular_price: z.string().optional().describe("Product regular price."),
+    related_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of related products IDs."),
+    reviews_allowed: z.boolean().optional().describe("Allow reviews."),
+    sale_price: z.string().optional().describe("Product sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    shipping_required: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product need to be shipped."),
+    shipping_taxable: z
+      .boolean()
+      .optional()
+      .describe("Shows whether or not the product shipping is taxable."),
+    short_description: z
+      .string()
+      .optional()
+      .describe("Product short description."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    slug: z.string().optional().describe("Product slug."),
+    sold_individually: z
+      .boolean()
+      .optional()
+      .describe("Allow one item to be bought in a single order."),
+    status: z
+      .enum([
+        "draft",
+        "pending",
+        "private",
+        "publish",
+        "future",
+        "auto-draft",
+        "trash",
+      ])
+      .optional()
+      .describe("Product status (post status)."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tags: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Tag ID."),
+            name: z.string().optional().describe("Tag name."),
+            slug: z.string().optional().describe("Tag slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of tags."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    total_sales: z.number().optional().describe("Amount of sales."),
+    type: z
+      .enum(["simple", "grouped", "external", "variable"])
+      .optional()
+      .describe("Product type."),
+    upsell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of up-sell products IDs."),
+    variations: z
+      .array(z.number())
+      .optional()
+      .describe("List of variations IDs."),
+    virtual: z.boolean().optional().describe("If the product is virtual."),
+    weight: z.string().optional().describe("Product weight (lbs)."),
+  })
+  .strict();
 
 export type ProductDeleteResponse = z.infer<typeof productDeleteResponseSchema>;
 
@@ -912,7 +1435,352 @@ export type ProductDuplicateCreateBody = z.infer<
 /**
  * POST /products/{id}/duplicate response body.
  */
-export const productDuplicateCreateResponseSchema = z.unknown();
+export const productDuplicateCreateResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            options: z
+              .array(z.string())
+              .optional()
+              .describe("List of available term names of the attribute."),
+            position: z.number().optional().describe("Attribute position."),
+            variation: z
+              .boolean()
+              .optional()
+              .describe("Define if the attribute can be used as variation."),
+            visible: z
+              .boolean()
+              .optional()
+              .describe(
+                'Define if the attribute is visible on the "Additional information" tab in the product\'s page.',
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    average_rating: z.string().optional().describe("Reviews average rating."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    brands: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Brand ID."),
+            name: z.string().optional().describe("Brand name."),
+            slug: z.string().optional().describe("Brand slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of brands."),
+    button_text: z
+      .string()
+      .optional()
+      .describe("Product external button text. Only for external products."),
+    catalog_visibility: z
+      .enum(["visible", "catalog", "search", "hidden"])
+      .optional()
+      .describe("Catalog visibility."),
+    categories: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Category ID."),
+            name: z.string().optional().describe("Category name."),
+            slug: z.string().optional().describe("Category slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of categories."),
+    cross_sell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of cross-sell products IDs."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the product was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the product was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was last modified, as GMT."),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    default_attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Defaults variation attributes."),
+    description: z.string().optional().describe("Product description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Product height (in)."),
+        length: z.string().optional().describe("Product length (in)."),
+        width: z.string().optional().describe("Product width (in)."),
+      })
+      .describe("Product dimensions.")
+      .strict()
+      .optional()
+      .describe("Product dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the product is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    external_url: z
+      .string()
+      .optional()
+      .describe("Product external URL. Only for external products."),
+    featured: z.boolean().optional().describe("Featured product."),
+    generated_slug: z
+      .string()
+      .optional()
+      .describe("Slug automatically generated from the product name."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    grouped_products: z
+      .array(z.number())
+      .optional()
+      .describe("List of grouped products ID."),
+    has_options: z
+      .boolean()
+      .optional()
+      .describe(
+        "Shows if the product needs to be configured before it can be bought.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    images: z
+      .array(
+        z
+          .object({
+            alt: z.string().optional().describe("Image alternative text."),
+            date_created: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was created, in the site's timezone.",
+              ),
+            date_created_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was created, as GMT."),
+            date_modified: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was last modified, in the site's timezone.",
+              ),
+            date_modified_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was last modified, as GMT."),
+            id: z.number().optional().describe("Image ID."),
+            name: z.string().optional().describe("Image name."),
+            src: z.string().optional().describe("Image URL."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of images."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the product."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at product level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    name: z.string().optional().describe("Product name."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on sale."),
+    parent_id: z.number().optional().describe("Product parent ID."),
+    permalink: z.string().optional().describe("Product URL."),
+    permalink_template: z
+      .string()
+      .optional()
+      .describe("Permalink template for the product."),
+    post_password: z.string().optional().describe("Post password."),
+    price: z.string().optional().describe("Current product price."),
+    price_html: z.string().optional().describe("Price formatted in HTML."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product can be bought."),
+    purchase_note: z
+      .string()
+      .optional()
+      .describe("Optional note to send the customer after purchase."),
+    rating_count: z
+      .number()
+      .optional()
+      .describe("Amount of reviews that the product have."),
+    regular_price: z.string().optional().describe("Product regular price."),
+    related_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of related products IDs."),
+    reviews_allowed: z.boolean().optional().describe("Allow reviews."),
+    sale_price: z.string().optional().describe("Product sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    shipping_required: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product need to be shipped."),
+    shipping_taxable: z
+      .boolean()
+      .optional()
+      .describe("Shows whether or not the product shipping is taxable."),
+    short_description: z
+      .string()
+      .optional()
+      .describe("Product short description."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    slug: z.string().optional().describe("Product slug."),
+    sold_individually: z
+      .boolean()
+      .optional()
+      .describe("Allow one item to be bought in a single order."),
+    status: z
+      .enum([
+        "draft",
+        "pending",
+        "private",
+        "publish",
+        "future",
+        "auto-draft",
+        "trash",
+      ])
+      .optional()
+      .describe("Product status (post status)."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tags: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Tag ID."),
+            name: z.string().optional().describe("Tag name."),
+            slug: z.string().optional().describe("Tag slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of tags."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    total_sales: z.number().optional().describe("Amount of sales."),
+    type: z
+      .enum(["simple", "grouped", "external", "variable"])
+      .optional()
+      .describe("Product type."),
+    upsell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of up-sell products IDs."),
+    variations: z
+      .array(z.number())
+      .optional()
+      .describe("List of variations IDs."),
+    virtual: z.boolean().optional().describe("If the product is virtual."),
+    weight: z.string().optional().describe("Product weight (lbs)."),
+  })
+  .strict();
 
 export type ProductDuplicateCreateResponse = z.infer<
   typeof productDuplicateCreateResponseSchema
@@ -1609,7 +2477,352 @@ export type ProductPostCustomBody = z.infer<typeof productPostCustomBodySchema>;
 /**
  * POST /products/{id} response body.
  */
-export const productPostCustomResponseSchema = z.unknown();
+export const productPostCustomResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            options: z
+              .array(z.string())
+              .optional()
+              .describe("List of available term names of the attribute."),
+            position: z.number().optional().describe("Attribute position."),
+            variation: z
+              .boolean()
+              .optional()
+              .describe("Define if the attribute can be used as variation."),
+            visible: z
+              .boolean()
+              .optional()
+              .describe(
+                'Define if the attribute is visible on the "Additional information" tab in the product\'s page.',
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    average_rating: z.string().optional().describe("Reviews average rating."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    brands: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Brand ID."),
+            name: z.string().optional().describe("Brand name."),
+            slug: z.string().optional().describe("Brand slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of brands."),
+    button_text: z
+      .string()
+      .optional()
+      .describe("Product external button text. Only for external products."),
+    catalog_visibility: z
+      .enum(["visible", "catalog", "search", "hidden"])
+      .optional()
+      .describe("Catalog visibility."),
+    categories: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Category ID."),
+            name: z.string().optional().describe("Category name."),
+            slug: z.string().optional().describe("Category slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of categories."),
+    cross_sell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of cross-sell products IDs."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the product was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the product was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was last modified, as GMT."),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    default_attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Defaults variation attributes."),
+    description: z.string().optional().describe("Product description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Product height (in)."),
+        length: z.string().optional().describe("Product length (in)."),
+        width: z.string().optional().describe("Product width (in)."),
+      })
+      .describe("Product dimensions.")
+      .strict()
+      .optional()
+      .describe("Product dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the product is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    external_url: z
+      .string()
+      .optional()
+      .describe("Product external URL. Only for external products."),
+    featured: z.boolean().optional().describe("Featured product."),
+    generated_slug: z
+      .string()
+      .optional()
+      .describe("Slug automatically generated from the product name."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    grouped_products: z
+      .array(z.number())
+      .optional()
+      .describe("List of grouped products ID."),
+    has_options: z
+      .boolean()
+      .optional()
+      .describe(
+        "Shows if the product needs to be configured before it can be bought.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    images: z
+      .array(
+        z
+          .object({
+            alt: z.string().optional().describe("Image alternative text."),
+            date_created: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was created, in the site's timezone.",
+              ),
+            date_created_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was created, as GMT."),
+            date_modified: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was last modified, in the site's timezone.",
+              ),
+            date_modified_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was last modified, as GMT."),
+            id: z.number().optional().describe("Image ID."),
+            name: z.string().optional().describe("Image name."),
+            src: z.string().optional().describe("Image URL."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of images."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the product."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at product level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    name: z.string().optional().describe("Product name."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on sale."),
+    parent_id: z.number().optional().describe("Product parent ID."),
+    permalink: z.string().optional().describe("Product URL."),
+    permalink_template: z
+      .string()
+      .optional()
+      .describe("Permalink template for the product."),
+    post_password: z.string().optional().describe("Post password."),
+    price: z.string().optional().describe("Current product price."),
+    price_html: z.string().optional().describe("Price formatted in HTML."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product can be bought."),
+    purchase_note: z
+      .string()
+      .optional()
+      .describe("Optional note to send the customer after purchase."),
+    rating_count: z
+      .number()
+      .optional()
+      .describe("Amount of reviews that the product have."),
+    regular_price: z.string().optional().describe("Product regular price."),
+    related_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of related products IDs."),
+    reviews_allowed: z.boolean().optional().describe("Allow reviews."),
+    sale_price: z.string().optional().describe("Product sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    shipping_required: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product need to be shipped."),
+    shipping_taxable: z
+      .boolean()
+      .optional()
+      .describe("Shows whether or not the product shipping is taxable."),
+    short_description: z
+      .string()
+      .optional()
+      .describe("Product short description."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    slug: z.string().optional().describe("Product slug."),
+    sold_individually: z
+      .boolean()
+      .optional()
+      .describe("Allow one item to be bought in a single order."),
+    status: z
+      .enum([
+        "draft",
+        "pending",
+        "private",
+        "publish",
+        "future",
+        "auto-draft",
+        "trash",
+      ])
+      .optional()
+      .describe("Product status (post status)."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tags: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Tag ID."),
+            name: z.string().optional().describe("Tag name."),
+            slug: z.string().optional().describe("Tag slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of tags."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    total_sales: z.number().optional().describe("Amount of sales."),
+    type: z
+      .enum(["simple", "grouped", "external", "variable"])
+      .optional()
+      .describe("Product type."),
+    upsell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of up-sell products IDs."),
+    variations: z
+      .array(z.number())
+      .optional()
+      .describe("List of variations IDs."),
+    virtual: z.boolean().optional().describe("If the product is virtual."),
+    weight: z.string().optional().describe("Product weight (lbs)."),
+  })
+  .strict();
 
 export type ProductPostCustomResponse = z.infer<
   typeof productPostCustomResponseSchema
@@ -1984,7 +3197,58 @@ export type ProductReviewPostCustomBody = z.infer<
 /**
  * POST /products/reviews/{id} response body.
  */
-export const productReviewPostCustomResponseSchema = z.unknown();
+export const productReviewPostCustomResponseSchema = z
+  .object({
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the review was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the review was created, as GMT."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    product_id: z
+      .number()
+      .optional()
+      .describe(
+        "Unique identifier for the product that the review belongs to.",
+      ),
+    product_name: z.string().optional().describe("Product name."),
+    product_permalink: z.string().optional().describe("Product URL."),
+    rating: z.number().optional().describe("Review rating (0 to 5)."),
+    review: z.string().optional().describe("The content of the review."),
+    reviewer: z.string().optional().describe("Reviewer name."),
+    reviewer_avatar_urls: z
+      .object({
+        "24": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 24 pixels."),
+        "48": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 48 pixels."),
+        "96": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 96 pixels."),
+      })
+      .describe("Avatar URLs for the object reviewer.")
+      .strict()
+      .optional()
+      .describe("Avatar URLs for the object reviewer."),
+    reviewer_email: z.string().optional().describe("Reviewer email."),
+    status: z
+      .enum(["approved", "hold", "spam", "unspam", "trash", "untrash"])
+      .optional()
+      .describe("Status of the review."),
+    verified: z
+      .boolean()
+      .optional()
+      .describe("Shows if the reviewer bought the product or not."),
+  })
+  .strict();
 
 export type ProductReviewPostCustomResponse = z.infer<
   typeof productReviewPostCustomResponseSchema
@@ -2078,7 +3342,26 @@ export type ProductShippingClassPostCustomBody = z.infer<
 /**
  * POST /products/shipping_classes/{id} response body.
  */
-export const productShippingClassPostCustomResponseSchema = z.unknown();
+export const productShippingClassPostCustomResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Shipping class name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductShippingClassPostCustomResponse = z.infer<
   typeof productShippingClassPostCustomResponseSchema
@@ -2168,7 +3451,26 @@ export type ProductTagPostCustomBody = z.infer<
 /**
  * POST /products/tags/{id} response body.
  */
-export const productTagPostCustomResponseSchema = z.unknown();
+export const productTagPostCustomResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Tag name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductTagPostCustomResponse = z.infer<
   typeof productTagPostCustomResponseSchema
@@ -2537,7 +3839,352 @@ export type ProductUpdateBody = z.infer<typeof productUpdateBodySchema>;
 /**
  * PUT /products/{id} response body.
  */
-export const productUpdateResponseSchema = z.unknown();
+export const productUpdateResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            options: z
+              .array(z.string())
+              .optional()
+              .describe("List of available term names of the attribute."),
+            position: z.number().optional().describe("Attribute position."),
+            variation: z
+              .boolean()
+              .optional()
+              .describe("Define if the attribute can be used as variation."),
+            visible: z
+              .boolean()
+              .optional()
+              .describe(
+                'Define if the attribute is visible on the "Additional information" tab in the product\'s page.',
+              ),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    average_rating: z.string().optional().describe("Reviews average rating."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    brands: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Brand ID."),
+            name: z.string().optional().describe("Brand name."),
+            slug: z.string().optional().describe("Brand slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of brands."),
+    button_text: z
+      .string()
+      .optional()
+      .describe("Product external button text. Only for external products."),
+    catalog_visibility: z
+      .enum(["visible", "catalog", "search", "hidden"])
+      .optional()
+      .describe("Catalog visibility."),
+    categories: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Category ID."),
+            name: z.string().optional().describe("Category name."),
+            slug: z.string().optional().describe("Category slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of categories."),
+    cross_sell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of cross-sell products IDs."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the product was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was created, as GMT."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the product was last modified, in the site's timezone.",
+      ),
+    date_modified_gmt: z
+      .string()
+      .optional()
+      .describe("The date the product was last modified, as GMT."),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    default_attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Defaults variation attributes."),
+    description: z.string().optional().describe("Product description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Product height (in)."),
+        length: z.string().optional().describe("Product length (in)."),
+        width: z.string().optional().describe("Product width (in)."),
+      })
+      .describe("Product dimensions.")
+      .strict()
+      .optional()
+      .describe("Product dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the product is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    external_url: z
+      .string()
+      .optional()
+      .describe("Product external URL. Only for external products."),
+    featured: z.boolean().optional().describe("Featured product."),
+    generated_slug: z
+      .string()
+      .optional()
+      .describe("Slug automatically generated from the product name."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    grouped_products: z
+      .array(z.number())
+      .optional()
+      .describe("List of grouped products ID."),
+    has_options: z
+      .boolean()
+      .optional()
+      .describe(
+        "Shows if the product needs to be configured before it can be bought.",
+      ),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    images: z
+      .array(
+        z
+          .object({
+            alt: z.string().optional().describe("Image alternative text."),
+            date_created: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was created, in the site's timezone.",
+              ),
+            date_created_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was created, as GMT."),
+            date_modified: z
+              .string()
+              .optional()
+              .describe(
+                "The date the image was last modified, in the site's timezone.",
+              ),
+            date_modified_gmt: z
+              .string()
+              .optional()
+              .describe("The date the image was last modified, as GMT."),
+            id: z.number().optional().describe("Image ID."),
+            name: z.string().optional().describe("Image name."),
+            src: z.string().optional().describe("Image URL."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of images."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the product."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at product level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    name: z.string().optional().describe("Product name."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product is on sale."),
+    parent_id: z.number().optional().describe("Product parent ID."),
+    permalink: z.string().optional().describe("Product URL."),
+    permalink_template: z
+      .string()
+      .optional()
+      .describe("Permalink template for the product."),
+    post_password: z.string().optional().describe("Post password."),
+    price: z.string().optional().describe("Current product price."),
+    price_html: z.string().optional().describe("Price formatted in HTML."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product can be bought."),
+    purchase_note: z
+      .string()
+      .optional()
+      .describe("Optional note to send the customer after purchase."),
+    rating_count: z
+      .number()
+      .optional()
+      .describe("Amount of reviews that the product have."),
+    regular_price: z.string().optional().describe("Product regular price."),
+    related_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of related products IDs."),
+    reviews_allowed: z.boolean().optional().describe("Allow reviews."),
+    sale_price: z.string().optional().describe("Product sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    shipping_required: z
+      .boolean()
+      .optional()
+      .describe("Shows if the product need to be shipped."),
+    shipping_taxable: z
+      .boolean()
+      .optional()
+      .describe("Shows whether or not the product shipping is taxable."),
+    short_description: z
+      .string()
+      .optional()
+      .describe("Product short description."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    slug: z.string().optional().describe("Product slug."),
+    sold_individually: z
+      .boolean()
+      .optional()
+      .describe("Allow one item to be bought in a single order."),
+    status: z
+      .enum([
+        "draft",
+        "pending",
+        "private",
+        "publish",
+        "future",
+        "auto-draft",
+        "trash",
+      ])
+      .optional()
+      .describe("Product status (post status)."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tags: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Tag ID."),
+            name: z.string().optional().describe("Tag name."),
+            slug: z.string().optional().describe("Tag slug."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of tags."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    total_sales: z.number().optional().describe("Amount of sales."),
+    type: z
+      .enum(["simple", "grouped", "external", "variable"])
+      .optional()
+      .describe("Product type."),
+    upsell_ids: z
+      .array(z.number())
+      .optional()
+      .describe("List of up-sell products IDs."),
+    variations: z
+      .array(z.number())
+      .optional()
+      .describe("List of variations IDs."),
+    virtual: z.boolean().optional().describe("If the product is virtual."),
+    weight: z.string().optional().describe("Product weight (lbs)."),
+  })
+  .strict();
 
 export type ProductUpdateResponse = z.infer<typeof productUpdateResponseSchema>;
 
@@ -2571,7 +4218,188 @@ export type ProductVariationDeleteQuery = z.infer<
 /**
  * DELETE /products/{product_id}/variations/{id} response body.
  */
-export const productVariationDeleteResponseSchema = z.unknown();
+export const productVariationDeleteResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the variation was created, in the site's timezone."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the variation was last modified, in the site's timezone.",
+      ),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    description: z.string().optional().describe("Variation description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Variation height (in)."),
+        length: z.string().optional().describe("Variation length (in)."),
+        width: z.string().optional().describe("Variation width (in)."),
+      })
+      .describe("Variation dimensions.")
+      .strict()
+      .optional()
+      .describe("Variation dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the variation is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Variation image data.")
+      .strict()
+      .optional()
+      .describe("Variation image data."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the variation."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at variation level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on sale."),
+    permalink: z.string().optional().describe("Variation URL."),
+    price: z.string().optional().describe("Current variation price."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation can be bought."),
+    regular_price: z.string().optional().describe("Variation regular price."),
+    sale_price: z.string().optional().describe("Variation sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    status: z
+      .enum(["draft", "pending", "private", "publish"])
+      .optional()
+      .describe("Variation status."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    type: z.string().optional().describe("Product type."),
+    virtual: z.boolean().optional().describe("If the variation is virtual."),
+    weight: z.string().optional().describe("Variation weight (lbs)."),
+  })
+  .strict();
 
 export type ProductVariationDeleteResponse = z.infer<
   typeof productVariationDeleteResponseSchema
@@ -2609,7 +4437,188 @@ export type ProductVariationGetQuery = z.infer<
 /**
  * GET /products/{product_id}/variations/{id} response body.
  */
-export const productVariationGetResponseSchema = z.unknown();
+export const productVariationGetResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the variation was created, in the site's timezone."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the variation was last modified, in the site's timezone.",
+      ),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    description: z.string().optional().describe("Variation description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Variation height (in)."),
+        length: z.string().optional().describe("Variation length (in)."),
+        width: z.string().optional().describe("Variation width (in)."),
+      })
+      .describe("Variation dimensions.")
+      .strict()
+      .optional()
+      .describe("Variation dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the variation is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Variation image data.")
+      .strict()
+      .optional()
+      .describe("Variation image data."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the variation."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at variation level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on sale."),
+    permalink: z.string().optional().describe("Variation URL."),
+    price: z.string().optional().describe("Current variation price."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation can be bought."),
+    regular_price: z.string().optional().describe("Variation regular price."),
+    sale_price: z.string().optional().describe("Variation sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    status: z
+      .enum(["draft", "pending", "private", "publish"])
+      .optional()
+      .describe("Variation status."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    type: z.string().optional().describe("Product type."),
+    virtual: z.boolean().optional().describe("If the variation is virtual."),
+    weight: z.string().optional().describe("Variation weight (lbs)."),
+  })
+  .strict();
 
 export type ProductVariationGetResponse = z.infer<
   typeof productVariationGetResponseSchema
@@ -2807,7 +4816,188 @@ export type ProductVariationPostCustomBody = z.infer<
 /**
  * POST /products/{product_id}/variations/{id} response body.
  */
-export const productVariationPostCustomResponseSchema = z.unknown();
+export const productVariationPostCustomResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the variation was created, in the site's timezone."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the variation was last modified, in the site's timezone.",
+      ),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    description: z.string().optional().describe("Variation description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Variation height (in)."),
+        length: z.string().optional().describe("Variation length (in)."),
+        width: z.string().optional().describe("Variation width (in)."),
+      })
+      .describe("Variation dimensions.")
+      .strict()
+      .optional()
+      .describe("Variation dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the variation is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Variation image data.")
+      .strict()
+      .optional()
+      .describe("Variation image data."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the variation."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at variation level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on sale."),
+    permalink: z.string().optional().describe("Variation URL."),
+    price: z.string().optional().describe("Current variation price."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation can be bought."),
+    regular_price: z.string().optional().describe("Variation regular price."),
+    sale_price: z.string().optional().describe("Variation sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    status: z
+      .enum(["draft", "pending", "private", "publish"])
+      .optional()
+      .describe("Variation status."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    type: z.string().optional().describe("Product type."),
+    virtual: z.boolean().optional().describe("If the variation is virtual."),
+    weight: z.string().optional().describe("Variation weight (lbs)."),
+  })
+  .strict();
 
 export type ProductVariationPostCustomResponse = z.infer<
   typeof productVariationPostCustomResponseSchema
@@ -3005,7 +5195,22 @@ export type ProductVariationPutBatchCustomBody = z.infer<
 /**
  * PUT /products/{product_id}/variations/batch response body.
  */
-export const productVariationPutBatchCustomResponseSchema = z.unknown();
+export const productVariationPutBatchCustomResponseSchema = z
+  .object({
+    create: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of created resources."),
+    delete: z
+      .array(z.number())
+      .optional()
+      .describe("List of delete resources."),
+    update: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of updated resources."),
+  })
+  .strict();
 
 export type ProductVariationPutBatchCustomResponse = z.infer<
   typeof productVariationPutBatchCustomResponseSchema
@@ -3203,7 +5408,188 @@ export type ProductVariationUpdateBody = z.infer<
 /**
  * PUT /products/{product_id}/variations/{id} response body.
  */
-export const productVariationUpdateResponseSchema = z.unknown();
+export const productVariationUpdateResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the variation was created, in the site's timezone."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the variation was last modified, in the site's timezone.",
+      ),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    description: z.string().optional().describe("Variation description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Variation height (in)."),
+        length: z.string().optional().describe("Variation length (in)."),
+        width: z.string().optional().describe("Variation width (in)."),
+      })
+      .describe("Variation dimensions.")
+      .strict()
+      .optional()
+      .describe("Variation dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the variation is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Variation image data.")
+      .strict()
+      .optional()
+      .describe("Variation image data."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the variation."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at variation level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on sale."),
+    permalink: z.string().optional().describe("Variation URL."),
+    price: z.string().optional().describe("Current variation price."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation can be bought."),
+    regular_price: z.string().optional().describe("Variation regular price."),
+    sale_price: z.string().optional().describe("Variation sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    status: z
+      .enum(["draft", "pending", "private", "publish"])
+      .optional()
+      .describe("Variation status."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    type: z.string().optional().describe("Product type."),
+    virtual: z.boolean().optional().describe("If the variation is virtual."),
+    weight: z.string().optional().describe("Variation weight (lbs)."),
+  })
+  .strict();
 
 export type ProductVariationUpdateResponse = z.infer<
   typeof productVariationUpdateResponseSchema
@@ -3639,7 +6025,22 @@ export type ProductVariationsBatchUpdateBody = z.infer<
 /**
  * POST /products/{product_id}/variations/batch response body.
  */
-export const productVariationsBatchUpdateResponseSchema = z.unknown();
+export const productVariationsBatchUpdateResponseSchema = z
+  .object({
+    create: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of created resources."),
+    delete: z
+      .array(z.number())
+      .optional()
+      .describe("List of delete resources."),
+    update: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of updated resources."),
+  })
+  .strict();
 
 export type ProductVariationsBatchUpdateResponse = z.infer<
   typeof productVariationsBatchUpdateResponseSchema
@@ -3837,7 +6238,188 @@ export type ProductVariationsCreateBody = z.infer<
 /**
  * POST /products/{product_id}/variations response body.
  */
-export const productVariationsCreateResponseSchema = z.unknown();
+export const productVariationsCreateResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the variation was created, in the site's timezone."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the variation was last modified, in the site's timezone.",
+      ),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    description: z.string().optional().describe("Variation description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Variation height (in)."),
+        length: z.string().optional().describe("Variation length (in)."),
+        width: z.string().optional().describe("Variation width (in)."),
+      })
+      .describe("Variation dimensions.")
+      .strict()
+      .optional()
+      .describe("Variation dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the variation is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Variation image data.")
+      .strict()
+      .optional()
+      .describe("Variation image data."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the variation."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at variation level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on sale."),
+    permalink: z.string().optional().describe("Variation URL."),
+    price: z.string().optional().describe("Current variation price."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation can be bought."),
+    regular_price: z.string().optional().describe("Variation regular price."),
+    sale_price: z.string().optional().describe("Variation sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    status: z
+      .enum(["draft", "pending", "private", "publish"])
+      .optional()
+      .describe("Variation status."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    type: z.string().optional().describe("Product type."),
+    virtual: z.boolean().optional().describe("If the variation is virtual."),
+    weight: z.string().optional().describe("Variation weight (lbs)."),
+  })
+  .strict();
 
 export type ProductVariationsCreateResponse = z.infer<
   typeof productVariationsCreateResponseSchema
@@ -4224,7 +6806,188 @@ export type ProductVariationsGenerateCreateBody = z.infer<
 /**
  * POST /products/{product_id}/variations/generate response body.
  */
-export const productVariationsGenerateCreateResponseSchema = z.unknown();
+export const productVariationsGenerateCreateResponseSchema = z
+  .object({
+    attributes: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Attribute ID."),
+            name: z.string().optional().describe("Attribute name."),
+            option: z
+              .string()
+              .optional()
+              .describe("Selected attribute term name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of attributes."),
+    backordered: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on backordered."),
+    backorders: z
+      .enum(["no", "notify", "yes"])
+      .optional()
+      .describe("If managing stock, this controls if backorders are allowed."),
+    backorders_allowed: z
+      .boolean()
+      .optional()
+      .describe("Shows if backorders are allowed."),
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the variation was created, in the site's timezone."),
+    date_modified: z
+      .string()
+      .optional()
+      .describe(
+        "The date the variation was last modified, in the site's timezone.",
+      ),
+    date_on_sale_from: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, in the site's timezone."),
+    date_on_sale_from_gmt: z
+      .string()
+      .optional()
+      .describe("Start date of sale price, as GMT."),
+    date_on_sale_to: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    date_on_sale_to_gmt: z
+      .string()
+      .optional()
+      .describe("End date of sale price, in the site's timezone."),
+    description: z.string().optional().describe("Variation description."),
+    dimensions: z
+      .object({
+        height: z.string().optional().describe("Variation height (in)."),
+        length: z.string().optional().describe("Variation length (in)."),
+        width: z.string().optional().describe("Variation width (in)."),
+      })
+      .describe("Variation dimensions.")
+      .strict()
+      .optional()
+      .describe("Variation dimensions."),
+    download_expiry: z
+      .number()
+      .optional()
+      .describe("Number of days until access to downloadable files expires."),
+    download_limit: z
+      .number()
+      .optional()
+      .describe(
+        "Number of times downloadable files can be downloaded after purchase.",
+      ),
+    downloadable: z
+      .boolean()
+      .optional()
+      .describe("If the variation is downloadable."),
+    downloads: z
+      .array(
+        z
+          .object({
+            file: z.string().optional().describe("File URL."),
+            id: z.string().optional().describe("File ID."),
+            name: z.string().optional().describe("File name."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("List of downloadable files."),
+    global_unique_id: z.string().optional().describe("GTIN, UPC, EAN or ISBN."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Variation image data.")
+      .strict()
+      .optional()
+      .describe("Variation image data."),
+    low_stock_amount: z
+      .number()
+      .nullable()
+      .optional()
+      .describe("Low Stock amount for the variation."),
+    manage_stock: z
+      .boolean()
+      .optional()
+      .describe("Stock management at variation level."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort products."),
+    meta_data: z
+      .array(
+        z
+          .object({
+            id: z.number().optional().describe("Meta ID."),
+            key: z.string().optional().describe("Meta key."),
+            value: z.unknown().optional().describe("Meta value."),
+          })
+          .strict(),
+      )
+      .optional()
+      .describe("Meta data."),
+    on_sale: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation is on sale."),
+    permalink: z.string().optional().describe("Variation URL."),
+    price: z.string().optional().describe("Current variation price."),
+    purchasable: z
+      .boolean()
+      .optional()
+      .describe("Shows if the variation can be bought."),
+    regular_price: z.string().optional().describe("Variation regular price."),
+    sale_price: z.string().optional().describe("Variation sale price."),
+    shipping_class: z.string().optional().describe("Shipping class slug."),
+    shipping_class_id: z.string().optional().describe("Shipping class ID."),
+    sku: z.string().optional().describe("Stock Keeping Unit."),
+    status: z
+      .enum(["draft", "pending", "private", "publish"])
+      .optional()
+      .describe("Variation status."),
+    stock_quantity: z.number().optional().describe("Stock quantity."),
+    stock_status: z
+      .enum(["instock", "outofstock", "onbackorder"])
+      .optional()
+      .describe("Controls the stock status of the product."),
+    tax_class: z.string().optional().describe("Tax class."),
+    tax_status: z
+      .enum(["taxable", "shipping", "none"])
+      .optional()
+      .describe("Tax status."),
+    type: z.string().optional().describe("Product type."),
+    virtual: z.boolean().optional().describe("If the variation is virtual."),
+    weight: z.string().optional().describe("Variation weight (lbs)."),
+  })
+  .strict();
 
 export type ProductVariationsGenerateCreateResponse = z.infer<
   typeof productVariationsGenerateCreateResponseSchema
@@ -4433,7 +7196,199 @@ export type ProductVariationsListQuery = z.infer<
 /**
  * GET /products/{product_id}/variations response body.
  */
-export const productVariationsListResponseSchema = z.array(z.unknown());
+export const productVariationsListResponseSchema = z.array(
+  z
+    .object({
+      attributes: z
+        .array(
+          z
+            .object({
+              id: z.number().optional().describe("Attribute ID."),
+              name: z.string().optional().describe("Attribute name."),
+              option: z
+                .string()
+                .optional()
+                .describe("Selected attribute term name."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("List of attributes."),
+      backordered: z
+        .boolean()
+        .optional()
+        .describe("Shows if the variation is on backordered."),
+      backorders: z
+        .enum(["no", "notify", "yes"])
+        .optional()
+        .describe(
+          "If managing stock, this controls if backorders are allowed.",
+        ),
+      backorders_allowed: z
+        .boolean()
+        .optional()
+        .describe("Shows if backorders are allowed."),
+      date_created: z
+        .string()
+        .optional()
+        .describe(
+          "The date the variation was created, in the site's timezone.",
+        ),
+      date_modified: z
+        .string()
+        .optional()
+        .describe(
+          "The date the variation was last modified, in the site's timezone.",
+        ),
+      date_on_sale_from: z
+        .string()
+        .optional()
+        .describe("Start date of sale price, in the site's timezone."),
+      date_on_sale_from_gmt: z
+        .string()
+        .optional()
+        .describe("Start date of sale price, as GMT."),
+      date_on_sale_to: z
+        .string()
+        .optional()
+        .describe("End date of sale price, in the site's timezone."),
+      date_on_sale_to_gmt: z
+        .string()
+        .optional()
+        .describe("End date of sale price, in the site's timezone."),
+      description: z.string().optional().describe("Variation description."),
+      dimensions: z
+        .object({
+          height: z.string().optional().describe("Variation height (in)."),
+          length: z.string().optional().describe("Variation length (in)."),
+          width: z.string().optional().describe("Variation width (in)."),
+        })
+        .describe("Variation dimensions.")
+        .strict()
+        .optional()
+        .describe("Variation dimensions."),
+      download_expiry: z
+        .number()
+        .optional()
+        .describe("Number of days until access to downloadable files expires."),
+      download_limit: z
+        .number()
+        .optional()
+        .describe(
+          "Number of times downloadable files can be downloaded after purchase.",
+        ),
+      downloadable: z
+        .boolean()
+        .optional()
+        .describe("If the variation is downloadable."),
+      downloads: z
+        .array(
+          z
+            .object({
+              file: z.string().optional().describe("File URL."),
+              id: z.string().optional().describe("File ID."),
+              name: z.string().optional().describe("File name."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("List of downloadable files."),
+      global_unique_id: z
+        .string()
+        .optional()
+        .describe("GTIN, UPC, EAN or ISBN."),
+      id: z.number().optional().describe("Unique identifier for the resource."),
+      image: z
+        .object({
+          alt: z.string().optional().describe("Image alternative text."),
+          date_created: z
+            .string()
+            .optional()
+            .describe(
+              "The date the image was created, in the site's timezone.",
+            ),
+          date_created_gmt: z
+            .string()
+            .optional()
+            .describe("The date the image was created, as GMT."),
+          date_modified: z
+            .string()
+            .optional()
+            .describe(
+              "The date the image was last modified, in the site's timezone.",
+            ),
+          date_modified_gmt: z
+            .string()
+            .optional()
+            .describe("The date the image was last modified, as GMT."),
+          id: z.number().optional().describe("Image ID."),
+          name: z.string().optional().describe("Image name."),
+          src: z.string().optional().describe("Image URL."),
+        })
+        .describe("Variation image data.")
+        .strict()
+        .optional()
+        .describe("Variation image data."),
+      low_stock_amount: z
+        .number()
+        .nullable()
+        .optional()
+        .describe("Low Stock amount for the variation."),
+      manage_stock: z
+        .boolean()
+        .optional()
+        .describe("Stock management at variation level."),
+      menu_order: z
+        .number()
+        .optional()
+        .describe("Menu order, used to custom sort products."),
+      meta_data: z
+        .array(
+          z
+            .object({
+              id: z.number().optional().describe("Meta ID."),
+              key: z.string().optional().describe("Meta key."),
+              value: z.unknown().optional().describe("Meta value."),
+            })
+            .strict(),
+        )
+        .optional()
+        .describe("Meta data."),
+      on_sale: z
+        .boolean()
+        .optional()
+        .describe("Shows if the variation is on sale."),
+      permalink: z.string().optional().describe("Variation URL."),
+      price: z.string().optional().describe("Current variation price."),
+      purchasable: z
+        .boolean()
+        .optional()
+        .describe("Shows if the variation can be bought."),
+      regular_price: z.string().optional().describe("Variation regular price."),
+      sale_price: z.string().optional().describe("Variation sale price."),
+      shipping_class: z.string().optional().describe("Shipping class slug."),
+      shipping_class_id: z.string().optional().describe("Shipping class ID."),
+      sku: z.string().optional().describe("Stock Keeping Unit."),
+      status: z
+        .enum(["draft", "pending", "private", "publish"])
+        .optional()
+        .describe("Variation status."),
+      stock_quantity: z.number().optional().describe("Stock quantity."),
+      stock_status: z
+        .enum(["instock", "outofstock", "onbackorder"])
+        .optional()
+        .describe("Controls the stock status of the product."),
+      tax_class: z.string().optional().describe("Tax class."),
+      tax_status: z
+        .enum(["taxable", "shipping", "none"])
+        .optional()
+        .describe("Tax status."),
+      type: z.string().optional().describe("Product type."),
+      virtual: z.boolean().optional().describe("If the variation is virtual."),
+      weight: z.string().optional().describe("Variation weight (lbs)."),
+    })
+    .strict(),
+);
 
 export type ProductVariationsListResponse = z.infer<
   typeof productVariationsListResponseSchema
@@ -4469,7 +7424,27 @@ export type ProductsAttributeDeleteQuery = z.infer<
 /**
  * DELETE /products/attributes/{id} response body.
  */
-export const productsAttributeDeleteResponseSchema = z.unknown();
+export const productsAttributeDeleteResponseSchema = z
+  .object({
+    has_archives: z
+      .boolean()
+      .optional()
+      .describe("Enable/Disable attribute archives."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Attribute name."),
+    order_by: z
+      .enum(["menu_order", "name", "name_num", "id"])
+      .optional()
+      .describe("Default sort order."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+    type: z.enum(["select"]).optional().describe("Type of attribute."),
+  })
+  .strict();
 
 export type ProductsAttributeDeleteResponse = z.infer<
   typeof productsAttributeDeleteResponseSchema
@@ -4563,7 +7538,30 @@ export type ProductsAttributeTermDeleteQuery = z.infer<
 /**
  * DELETE /products/attributes/{attribute_id}/terms/{id} response body.
  */
-export const productsAttributeTermDeleteResponseSchema = z.unknown();
+export const productsAttributeTermDeleteResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Term name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsAttributeTermDeleteResponse = z.infer<
   typeof productsAttributeTermDeleteResponseSchema
@@ -4601,7 +7599,30 @@ export type ProductsAttributeTermGetQuery = z.infer<
 /**
  * GET /products/attributes/{attribute_id}/terms/{id} response body.
  */
-export const productsAttributeTermGetResponseSchema = z.unknown();
+export const productsAttributeTermGetResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Term name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsAttributeTermGetResponse = z.infer<
   typeof productsAttributeTermGetResponseSchema
@@ -4648,7 +7669,30 @@ export type ProductsAttributeTermUpdateBody = z.infer<
 /**
  * PUT /products/attributes/{attribute_id}/terms/{id} response body.
  */
-export const productsAttributeTermUpdateResponseSchema = z.unknown();
+export const productsAttributeTermUpdateResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Term name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsAttributeTermUpdateResponse = z.infer<
   typeof productsAttributeTermUpdateResponseSchema
@@ -4728,7 +7772,22 @@ export type ProductsAttributeTermsBatchUpdateBody = z.infer<
 /**
  * POST /products/attributes/{attribute_id}/terms/batch response body.
  */
-export const productsAttributeTermsBatchUpdateResponseSchema = z.unknown();
+export const productsAttributeTermsBatchUpdateResponseSchema = z
+  .object({
+    create: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of created resources."),
+    delete: z
+      .array(z.number())
+      .optional()
+      .describe("List of delete resources."),
+    update: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of updated resources."),
+  })
+  .strict();
 
 export type ProductsAttributeTermsBatchUpdateResponse = z.infer<
   typeof productsAttributeTermsBatchUpdateResponseSchema
@@ -4775,7 +7834,30 @@ export type ProductsAttributeTermsCreateBody = z.infer<
 /**
  * POST /products/attributes/{attribute_id}/terms response body.
  */
-export const productsAttributeTermsCreateResponseSchema = z.unknown();
+export const productsAttributeTermsCreateResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Term name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsAttributeTermsCreateResponse = z.infer<
   typeof productsAttributeTermsCreateResponseSchema
@@ -4872,7 +7954,32 @@ export type ProductsAttributeTermsListQuery = z.infer<
 /**
  * GET /products/attributes/{attribute_id}/terms response body.
  */
-export const productsAttributeTermsListResponseSchema = z.array(z.unknown());
+export const productsAttributeTermsListResponseSchema = z.array(
+  z
+    .object({
+      count: z
+        .number()
+        .optional()
+        .describe("Number of published products for the resource."),
+      description: z
+        .string()
+        .optional()
+        .describe("HTML description of the resource."),
+      id: z.number().optional().describe("Unique identifier for the resource."),
+      menu_order: z
+        .number()
+        .optional()
+        .describe("Menu order, used to custom sort the resource."),
+      name: z.string().optional().describe("Term name."),
+      slug: z
+        .string()
+        .optional()
+        .describe(
+          "An alphanumeric identifier for the resource unique to its type.",
+        ),
+    })
+    .strict(),
+);
 
 export type ProductsAttributeTermsListResponse = z.infer<
   typeof productsAttributeTermsListResponseSchema
@@ -4920,7 +8027,27 @@ export type ProductsAttributeUpdateBody = z.infer<
 /**
  * PUT /products/attributes/{id} response body.
  */
-export const productsAttributeUpdateResponseSchema = z.unknown();
+export const productsAttributeUpdateResponseSchema = z
+  .object({
+    has_archives: z
+      .boolean()
+      .optional()
+      .describe("Enable/Disable attribute archives."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Attribute name."),
+    order_by: z
+      .enum(["menu_order", "name", "name_num", "id"])
+      .optional()
+      .describe("Default sort order."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+    type: z.enum(["select"]).optional().describe("Type of attribute."),
+  })
+  .strict();
 
 export type ProductsAttributeUpdateResponse = z.infer<
   typeof productsAttributeUpdateResponseSchema
@@ -5850,7 +8977,67 @@ export type ProductsBrandDeleteQuery = z.infer<
 /**
  * DELETE /products/brands/{id} response body.
  */
-export const productsBrandDeleteResponseSchema = z.unknown();
+export const productsBrandDeleteResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    display: z
+      .enum(["default", "products", "subcategories", "both"])
+      .optional()
+      .describe("Category archive display type."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Image data.")
+      .strict()
+      .optional()
+      .describe("Image data."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Category name."),
+    parent: z
+      .number()
+      .optional()
+      .describe("The ID for the parent of the resource."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsBrandDeleteResponse = z.infer<
   typeof productsBrandDeleteResponseSchema
@@ -6034,7 +9221,67 @@ export type ProductsBrandUpdateBody = z.infer<
 /**
  * PUT /products/brands/{id} response body.
  */
-export const productsBrandUpdateResponseSchema = z.unknown();
+export const productsBrandUpdateResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    display: z
+      .enum(["default", "products", "subcategories", "both"])
+      .optional()
+      .describe("Category archive display type."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Image data.")
+      .strict()
+      .optional()
+      .describe("Image data."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Category name."),
+    parent: z
+      .number()
+      .optional()
+      .describe("The ID for the parent of the resource."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsBrandUpdateResponse = z.infer<
   typeof productsBrandUpdateResponseSchema
@@ -6984,7 +10231,67 @@ export type ProductsCategoryDeleteQuery = z.infer<
 /**
  * DELETE /products/categories/{id} response body.
  */
-export const productsCategoryDeleteResponseSchema = z.unknown();
+export const productsCategoryDeleteResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    display: z
+      .enum(["default", "products", "subcategories", "both"])
+      .optional()
+      .describe("Category archive display type."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Image data.")
+      .strict()
+      .optional()
+      .describe("Image data."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Category name."),
+    parent: z
+      .number()
+      .optional()
+      .describe("The ID for the parent of the resource."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsCategoryDeleteResponse = z.infer<
   typeof productsCategoryDeleteResponseSchema
@@ -7170,7 +10477,67 @@ export type ProductsCategoryUpdateBody = z.infer<
 /**
  * PUT /products/categories/{id} response body.
  */
-export const productsCategoryUpdateResponseSchema = z.unknown();
+export const productsCategoryUpdateResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    display: z
+      .enum(["default", "products", "subcategories", "both"])
+      .optional()
+      .describe("Category archive display type."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    image: z
+      .object({
+        alt: z.string().optional().describe("Image alternative text."),
+        date_created: z
+          .string()
+          .optional()
+          .describe("The date the image was created, in the site's timezone."),
+        date_created_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was created, as GMT."),
+        date_modified: z
+          .string()
+          .optional()
+          .describe(
+            "The date the image was last modified, in the site's timezone.",
+          ),
+        date_modified_gmt: z
+          .string()
+          .optional()
+          .describe("The date the image was last modified, as GMT."),
+        id: z.number().optional().describe("Image ID."),
+        name: z.string().optional().describe("Image name."),
+        src: z.string().optional().describe("Image URL."),
+      })
+      .describe("Image data.")
+      .strict()
+      .optional()
+      .describe("Image data."),
+    menu_order: z
+      .number()
+      .optional()
+      .describe("Menu order, used to custom sort the resource."),
+    name: z.string().optional().describe("Category name."),
+    parent: z
+      .number()
+      .optional()
+      .describe("The ID for the parent of the resource."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsCategoryUpdateResponse = z.infer<
   typeof productsCategoryUpdateResponseSchema
@@ -8500,7 +11867,58 @@ export type ProductsReviewDeleteQuery = z.infer<
 /**
  * DELETE /products/reviews/{id} response body.
  */
-export const productsReviewDeleteResponseSchema = z.unknown();
+export const productsReviewDeleteResponseSchema = z
+  .object({
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the review was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the review was created, as GMT."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    product_id: z
+      .number()
+      .optional()
+      .describe(
+        "Unique identifier for the product that the review belongs to.",
+      ),
+    product_name: z.string().optional().describe("Product name."),
+    product_permalink: z.string().optional().describe("Product URL."),
+    rating: z.number().optional().describe("Review rating (0 to 5)."),
+    review: z.string().optional().describe("The content of the review."),
+    reviewer: z.string().optional().describe("Reviewer name."),
+    reviewer_avatar_urls: z
+      .object({
+        "24": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 24 pixels."),
+        "48": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 48 pixels."),
+        "96": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 96 pixels."),
+      })
+      .describe("Avatar URLs for the object reviewer.")
+      .strict()
+      .optional()
+      .describe("Avatar URLs for the object reviewer."),
+    reviewer_email: z.string().optional().describe("Reviewer email."),
+    status: z
+      .enum(["approved", "hold", "spam", "unspam", "trash", "untrash"])
+      .optional()
+      .describe("Status of the review."),
+    verified: z
+      .boolean()
+      .optional()
+      .describe("Shows if the reviewer bought the product or not."),
+  })
+  .strict();
 
 export type ProductsReviewDeleteResponse = z.infer<
   typeof productsReviewDeleteResponseSchema
@@ -8636,7 +12054,58 @@ export type ProductsReviewUpdateBody = z.infer<
 /**
  * PUT /products/reviews/{id} response body.
  */
-export const productsReviewUpdateResponseSchema = z.unknown();
+export const productsReviewUpdateResponseSchema = z
+  .object({
+    date_created: z
+      .string()
+      .optional()
+      .describe("The date the review was created, in the site's timezone."),
+    date_created_gmt: z
+      .string()
+      .optional()
+      .describe("The date the review was created, as GMT."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    product_id: z
+      .number()
+      .optional()
+      .describe(
+        "Unique identifier for the product that the review belongs to.",
+      ),
+    product_name: z.string().optional().describe("Product name."),
+    product_permalink: z.string().optional().describe("Product URL."),
+    rating: z.number().optional().describe("Review rating (0 to 5)."),
+    review: z.string().optional().describe("The content of the review."),
+    reviewer: z.string().optional().describe("Reviewer name."),
+    reviewer_avatar_urls: z
+      .object({
+        "24": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 24 pixels."),
+        "48": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 48 pixels."),
+        "96": z
+          .string()
+          .optional()
+          .describe("Avatar URL with image size of 96 pixels."),
+      })
+      .describe("Avatar URLs for the object reviewer.")
+      .strict()
+      .optional()
+      .describe("Avatar URLs for the object reviewer."),
+    reviewer_email: z.string().optional().describe("Reviewer email."),
+    status: z
+      .enum(["approved", "hold", "spam", "unspam", "trash", "untrash"])
+      .optional()
+      .describe("Status of the review."),
+    verified: z
+      .boolean()
+      .optional()
+      .describe("Shows if the reviewer bought the product or not."),
+  })
+  .strict();
 
 export type ProductsReviewUpdateResponse = z.infer<
   typeof productsReviewUpdateResponseSchema
@@ -8989,7 +12458,26 @@ export type ProductsShippingClassDeleteQuery = z.infer<
 /**
  * DELETE /products/shipping_classes/{id} response body.
  */
-export const productsShippingClassDeleteResponseSchema = z.unknown();
+export const productsShippingClassDeleteResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Shipping class name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsShippingClassDeleteResponse = z.infer<
   typeof productsShippingClassDeleteResponseSchema
@@ -9089,7 +12577,26 @@ export type ProductsShippingClassUpdateBody = z.infer<
 /**
  * PUT /products/shipping_classes/{id} response body.
  */
-export const productsShippingClassUpdateResponseSchema = z.unknown();
+export const productsShippingClassUpdateResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Shipping class name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsShippingClassUpdateResponse = z.infer<
   typeof productsShippingClassUpdateResponseSchema
@@ -9975,7 +13482,26 @@ export type ProductsTagDeleteQuery = z.infer<
 /**
  * DELETE /products/tags/{id} response body.
  */
-export const productsTagDeleteResponseSchema = z.unknown();
+export const productsTagDeleteResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Tag name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsTagDeleteResponse = z.infer<
   typeof productsTagDeleteResponseSchema
@@ -10071,7 +13597,26 @@ export type ProductsTagUpdateBody = z.infer<typeof productsTagUpdateBodySchema>;
 /**
  * PUT /products/tags/{id} response body.
  */
-export const productsTagUpdateResponseSchema = z.unknown();
+export const productsTagUpdateResponseSchema = z
+  .object({
+    count: z
+      .number()
+      .optional()
+      .describe("Number of published products for the resource."),
+    description: z
+      .string()
+      .optional()
+      .describe("HTML description of the resource."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Tag name."),
+    slug: z
+      .string()
+      .optional()
+      .describe(
+        "An alphanumeric identifier for the resource unique to its type.",
+      ),
+  })
+  .strict();
 
 export type ProductsTagUpdateResponse = z.infer<
   typeof productsTagUpdateResponseSchema

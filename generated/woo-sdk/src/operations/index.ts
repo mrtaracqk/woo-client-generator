@@ -10,7 +10,6 @@ export * from "./coupons";
 export * from "./customers";
 export * from "./data";
 export * from "./layoutTemplates";
-export * from "./marketplace";
 export * from "./orders";
 export * from "./paymentGateways";
 export * from "./products";

@@ -39,7 +39,16 @@ export type SystemStatuToolPostCustomBody = z.infer<
 /**
  * POST /system_status/tools/{id} response body.
  */
-export const systemStatuToolPostCustomResponseSchema = z.unknown();
+export const systemStatuToolPostCustomResponseSchema = z
+  .object({
+    action: z.string().optional().describe("What running the tool will do."),
+    description: z.string().optional().describe("Tool description."),
+    id: z.string().optional().describe("A unique identifier for the tool."),
+    message: z.string().optional().describe("Tool return message."),
+    name: z.string().optional().describe("Tool name."),
+    success: z.boolean().optional().describe("Did the tool run successfully?"),
+  })
+  .strict();
 
 export type SystemStatuToolPostCustomResponse = z.infer<
   typeof systemStatuToolPostCustomResponseSchema
@@ -504,7 +513,16 @@ export type SystemStatusToolUpdateBody = z.infer<
 /**
  * PUT /system_status/tools/{id} response body.
  */
-export const systemStatusToolUpdateResponseSchema = z.unknown();
+export const systemStatusToolUpdateResponseSchema = z
+  .object({
+    action: z.string().optional().describe("What running the tool will do."),
+    description: z.string().optional().describe("Tool description."),
+    id: z.string().optional().describe("A unique identifier for the tool."),
+    message: z.string().optional().describe("Tool return message."),
+    name: z.string().optional().describe("Tool name."),
+    success: z.boolean().optional().describe("Did the tool run successfully?"),
+  })
+  .strict();
 
 export type SystemStatusToolUpdateResponse = z.infer<
   typeof systemStatusToolUpdateResponseSchema

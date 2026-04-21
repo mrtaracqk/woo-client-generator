@@ -86,15 +86,16 @@ interface OperationNaming {
 export const buildWooSdkManifest = (
   snapshot: WooRestSnapshot,
 ): WooSdkManifest => {
-  const operationsWithDerivedSchemas = deriveMissingReadResponseSchemas(
-    snapshot.routes.flatMap((route) =>
-      buildOperationsForRoute(route, snapshot.source.namespace),
-    ),
+  const marketplacePrefix = `/${snapshot.source.namespace}/marketplace`;
+  const routesForManifest = snapshot.routes.filter(
+    (route) => !route.route.startsWith(marketplacePrefix),
   );
 
-  const operations = disambiguateOperationNames(operationsWithDerivedSchemas).sort(
-    compareOperations,
-  );
+  const operations = disambiguateOperationNames(
+    routesForManifest.flatMap((route) =>
+      buildOperationsForRoute(route, snapshot.source.namespace),
+    ),
+  ).sort(compareOperations);
 
   return sortJsonValue({
     source: snapshot.source,
@@ -104,58 +105,6 @@ export const buildWooSdkManifest = (
 
 export const stringifyWooSdkManifest = (manifest: WooSdkManifest): string =>
   `${JSON.stringify(sortJsonValue(manifest), null, 2)}\n`;
-
-const deriveMissingReadResponseSchemas = (
-  operations: WooSdkOperation[],
-): WooSdkOperation[] => {
-  const listSchemasByBaseRoute = new Map<string, Record<string, unknown>>();
-
-  for (const operation of operations) {
-    if (
-      operation.kind === "list" &&
-      operation.method === "GET" &&
-      operation.responseSchema
-    ) {
-      const baseRoute = stripTrailingPathParamSegment(operation.routeTemplate);
-      listSchemasByBaseRoute.set(baseRoute, operation.responseSchema);
-    }
-  }
-
-  return operations.map((operation) => {
-    if (
-      operation.kind === "read" &&
-      operation.method === "GET" &&
-      operation.responseSchema === undefined
-    ) {
-      const baseRoute = stripTrailingPathParamSegment(operation.routeTemplate);
-      const derivedSchema = listSchemasByBaseRoute.get(baseRoute);
-
-      if (derivedSchema) {
-        return {
-          ...operation,
-          responseSchema: derivedSchema,
-        };
-      }
-    }
-
-    return operation;
-  });
-};
-
-const stripTrailingPathParamSegment = (routeTemplate: string): string => {
-  const segments = routeTemplate.split("/").filter(Boolean);
-
-  if (segments.length === 0) {
-    return routeTemplate;
-  }
-
-  const lastSegment = segments[segments.length - 1];
-  if (/^\{[^}]+\}$/.test(lastSegment)) {
-    return `/${segments.slice(0, -1).join("/")}`;
-  }
-
-  return routeTemplate;
-};
 
 const disambiguateOperationNames = (
   operations: WooSdkOperation[],
@@ -266,12 +215,12 @@ const buildOperationsForRoute = (
             }
           : {}),
         ...(responseDescription ? { responseDescription } : {}),
-        ...(methodSnapshot.schema
-          ? {
-              responseSchema: methodSnapshot.schema,
-            }
-          : {}),
-      } satisfies WooSdkOperation;
+        responseSchema: methodSnapshot.schema ?? {
+          type: "mixed",
+          description:
+            "Response schema was not present in the Woo REST snapshot for this operation.",
+        },
+      } as WooSdkOperation;
     })
     .filter((operation): operation is WooSdkOperation => Boolean(operation));
 };
@@ -490,9 +439,7 @@ const buildOperationNaming = (
       ...functionResourceSegments.flatMap(splitWords),
     ]),
     internalKey: [
-      toScreamingSnake(
-        typeResourceSegments.flatMap(splitWords).join("_"),
-      ),
+      toScreamingSnake(typeResourceSegments.flatMap(splitWords).join("_")),
       toScreamingSnake(operationName),
     ].join("_"),
     typeBaseName: `${toPascalCase(typeResourceSegments.flatMap(splitWords))}${operationName}`,
@@ -530,7 +477,12 @@ const buildCustomOperationNaming = (
   const typeWords = [...resourceWords, methodWord, ...tailWords, "custom"];
 
   return {
-    functionName: toCamelCase([methodWord, ...resourceWords, ...tailWords, "custom"]),
+    functionName: toCamelCase([
+      methodWord,
+      ...resourceWords,
+      ...tailWords,
+      "custom",
+    ]),
     internalKey: toScreamingSnake(typeWords.join("_")),
     typeBaseName: toPascalCase(typeWords),
   };
@@ -549,7 +501,12 @@ const buildFunctionResourceSegments = (
     return resourceSegments;
   }
 
-  if (kind === "create" || kind === "read" || kind === "update" || kind === "delete") {
+  if (
+    kind === "create" ||
+    kind === "read" ||
+    kind === "update" ||
+    kind === "delete"
+  ) {
     return [
       ...resourceSegments.slice(0, -1),
       singularizeSegment(resourceSegments.at(-1) ?? ""),
@@ -793,10 +750,7 @@ const singularizeWord = (word: string): string => {
     return `${word.slice(0, -3)}y`;
   }
 
-  if (
-    /(ches|shes|sses|xes|zes)$/.test(word) &&
-    word.length > 4
-  ) {
+  if (/(ches|shes|sses|xes|zes)$/.test(word) && word.length > 4) {
     return word.slice(0, -2);
   }
 

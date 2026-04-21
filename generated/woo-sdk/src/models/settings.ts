@@ -78,7 +78,22 @@ export type SettingBatchUpdateBody = z.infer<
 /**
  * POST /settings/{group_id}/batch response body.
  */
-export const settingBatchUpdateResponseSchema = z.unknown();
+export const settingBatchUpdateResponseSchema = z
+  .object({
+    create: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of created resources."),
+    delete: z
+      .array(z.number())
+      .optional()
+      .describe("List of delete resources."),
+    update: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of updated resources."),
+  })
+  .strict();
 
 export type SettingBatchUpdateResponse = z.infer<
   typeof settingBatchUpdateResponseSchema
@@ -111,24 +126,53 @@ export type SettingGetGroupIdQuery = z.infer<
  */
 export const settingGetGroupIdResponseSchema = z
   .object({
+    default: z.unknown().optional().describe("Default value for the setting."),
     description: z
       .string()
       .optional()
       .describe(
         "A human readable description for the setting used in interfaces.",
       ),
-    id: z
+    group_id: z
       .string()
       .optional()
-      .describe(
-        "A unique identifier that can be used to link settings together.",
-      ),
+      .describe("An identifier for the group this setting belongs to."),
+    id: z.string().optional().describe("A unique identifier for the setting."),
     label: z
       .string()
       .optional()
       .describe("A human readable label for the setting used in interfaces."),
-    parent_id: z.string().optional().describe("ID of parent grouping."),
-    sub_groups: z.string().optional().describe("IDs for settings sub groups."),
+    options: z
+      .record(z.string(), z.unknown())
+      .optional()
+      .describe(
+        "Array of options (key value pairs) for inputs such as select, multiselect, and radio buttons.",
+      ),
+    placeholder: z
+      .string()
+      .optional()
+      .describe("Placeholder text to be displayed in text inputs."),
+    tip: z
+      .string()
+      .optional()
+      .describe("Additional help text shown to the user about the setting."),
+    type: z
+      .enum([
+        "text",
+        "email",
+        "number",
+        "color",
+        "password",
+        "textarea",
+        "select",
+        "multiselect",
+        "radio",
+        "image_width",
+        "checkbox",
+      ])
+      .optional()
+      .describe("Type of setting."),
+    value: z.unknown().optional().describe("Setting value."),
   })
   .strict();
 
@@ -161,7 +205,57 @@ export type SettingGetGroupIdIdQuery = z.infer<
 /**
  * GET /settings/{group_id}/{id} response body.
  */
-export const settingGetGroupIdIdResponseSchema = z.unknown();
+export const settingGetGroupIdIdResponseSchema = z
+  .object({
+    default: z.unknown().optional().describe("Default value for the setting."),
+    description: z
+      .string()
+      .optional()
+      .describe(
+        "A human readable description for the setting used in interfaces.",
+      ),
+    group_id: z
+      .string()
+      .optional()
+      .describe("An identifier for the group this setting belongs to."),
+    id: z.string().optional().describe("A unique identifier for the setting."),
+    label: z
+      .string()
+      .optional()
+      .describe("A human readable label for the setting used in interfaces."),
+    options: z
+      .record(z.string(), z.unknown())
+      .optional()
+      .describe(
+        "Array of options (key value pairs) for inputs such as select, multiselect, and radio buttons.",
+      ),
+    placeholder: z
+      .string()
+      .optional()
+      .describe("Placeholder text to be displayed in text inputs."),
+    tip: z
+      .string()
+      .optional()
+      .describe("Additional help text shown to the user about the setting."),
+    type: z
+      .enum([
+        "text",
+        "email",
+        "number",
+        "color",
+        "password",
+        "textarea",
+        "select",
+        "multiselect",
+        "radio",
+        "image_width",
+        "checkbox",
+      ])
+      .optional()
+      .describe("Type of setting."),
+    value: z.unknown().optional().describe("Setting value."),
+  })
+  .strict();
 
 export type SettingGetGroupIdIdResponse = z.infer<
   typeof settingGetGroupIdIdResponseSchema
@@ -204,7 +298,57 @@ export type SettingPostCustomBody = z.infer<typeof settingPostCustomBodySchema>;
 /**
  * POST /settings/{group_id}/{id} response body.
  */
-export const settingPostCustomResponseSchema = z.unknown();
+export const settingPostCustomResponseSchema = z
+  .object({
+    default: z.unknown().optional().describe("Default value for the setting."),
+    description: z
+      .string()
+      .optional()
+      .describe(
+        "A human readable description for the setting used in interfaces.",
+      ),
+    group_id: z
+      .string()
+      .optional()
+      .describe("An identifier for the group this setting belongs to."),
+    id: z.string().optional().describe("A unique identifier for the setting."),
+    label: z
+      .string()
+      .optional()
+      .describe("A human readable label for the setting used in interfaces."),
+    options: z
+      .record(z.string(), z.unknown())
+      .optional()
+      .describe(
+        "Array of options (key value pairs) for inputs such as select, multiselect, and radio buttons.",
+      ),
+    placeholder: z
+      .string()
+      .optional()
+      .describe("Placeholder text to be displayed in text inputs."),
+    tip: z
+      .string()
+      .optional()
+      .describe("Additional help text shown to the user about the setting."),
+    type: z
+      .enum([
+        "text",
+        "email",
+        "number",
+        "color",
+        "password",
+        "textarea",
+        "select",
+        "multiselect",
+        "radio",
+        "image_width",
+        "checkbox",
+      ])
+      .optional()
+      .describe("Type of setting."),
+    value: z.unknown().optional().describe("Setting value."),
+  })
+  .strict();
 
 export type SettingPostCustomResponse = z.infer<
   typeof settingPostCustomResponseSchema
@@ -273,7 +417,22 @@ export type SettingPutBatchCustomGroupIdBatchBody = z.infer<
 /**
  * PUT /settings/{group_id}/batch response body.
  */
-export const settingPutBatchCustomGroupIdBatchResponseSchema = z.unknown();
+export const settingPutBatchCustomGroupIdBatchResponseSchema = z
+  .object({
+    create: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of created resources."),
+    delete: z
+      .array(z.number())
+      .optional()
+      .describe("List of delete resources."),
+    update: z
+      .array(z.record(z.string(), z.unknown()))
+      .optional()
+      .describe("List of updated resources."),
+  })
+  .strict();
 
 export type SettingPutBatchCustomGroupIdBatchResponse = z.infer<
   typeof settingPutBatchCustomGroupIdBatchResponseSchema
@@ -316,7 +475,57 @@ export type SettingUpdateBody = z.infer<typeof settingUpdateBodySchema>;
 /**
  * PUT /settings/{group_id}/{id} response body.
  */
-export const settingUpdateResponseSchema = z.unknown();
+export const settingUpdateResponseSchema = z
+  .object({
+    default: z.unknown().optional().describe("Default value for the setting."),
+    description: z
+      .string()
+      .optional()
+      .describe(
+        "A human readable description for the setting used in interfaces.",
+      ),
+    group_id: z
+      .string()
+      .optional()
+      .describe("An identifier for the group this setting belongs to."),
+    id: z.string().optional().describe("A unique identifier for the setting."),
+    label: z
+      .string()
+      .optional()
+      .describe("A human readable label for the setting used in interfaces."),
+    options: z
+      .record(z.string(), z.unknown())
+      .optional()
+      .describe(
+        "Array of options (key value pairs) for inputs such as select, multiselect, and radio buttons.",
+      ),
+    placeholder: z
+      .string()
+      .optional()
+      .describe("Placeholder text to be displayed in text inputs."),
+    tip: z
+      .string()
+      .optional()
+      .describe("Additional help text shown to the user about the setting."),
+    type: z
+      .enum([
+        "text",
+        "email",
+        "number",
+        "color",
+        "password",
+        "textarea",
+        "select",
+        "multiselect",
+        "radio",
+        "image_width",
+        "checkbox",
+      ])
+      .optional()
+      .describe("Type of setting."),
+    value: z.unknown().optional().describe("Setting value."),
+  })
+  .strict();
 
 export type SettingUpdateResponse = z.infer<typeof settingUpdateResponseSchema>;
 

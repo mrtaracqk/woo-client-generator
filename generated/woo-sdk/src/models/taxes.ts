@@ -32,7 +32,52 @@ export type TaxDeleteQuery = z.infer<typeof taxDeleteQuerySchema>;
 /**
  * DELETE /taxes/{id} response body.
  */
-export const taxDeleteResponseSchema = z.unknown();
+export const taxDeleteResponseSchema = z
+  .object({
+    cities: z
+      .array(z.string())
+      .optional()
+      .describe("List of city names. Introduced in WooCommerce 5.3."),
+    city: z
+      .string()
+      .optional()
+      .describe(
+        "City name, it doesn't support multiple values. Deprecated as of WooCommerce 5.3, 'cities' should be used instead.",
+      ),
+    class: z
+      .enum(["standard", "reduced-rate", "zero-rate"])
+      .optional()
+      .describe("Tax class."),
+    compound: z
+      .boolean()
+      .optional()
+      .describe("Whether or not this is a compound rate."),
+    country: z.string().optional().describe("Country ISO 3166 code."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Tax rate name."),
+    order: z
+      .number()
+      .optional()
+      .describe("Indicates the order that will appear in queries."),
+    postcode: z
+      .string()
+      .optional()
+      .describe(
+        "Postcode/ZIP, it doesn't support multiple values. Deprecated as of WooCommerce 5.3, 'postcodes' should be used instead.",
+      ),
+    postcodes: z
+      .array(z.string())
+      .optional()
+      .describe("List of postcodes / ZIPs. Introduced in WooCommerce 5.3."),
+    priority: z.number().optional().describe("Tax priority."),
+    rate: z.string().optional().describe("Tax rate."),
+    shipping: z
+      .boolean()
+      .optional()
+      .describe("Whether or not this tax rate also gets applied to shipping."),
+    state: z.string().optional().describe("State code."),
+  })
+  .strict();
 
 export type TaxDeleteResponse = z.infer<typeof taxDeleteResponseSchema>;
 
@@ -176,7 +221,52 @@ export type TaxPostCustomBody = z.infer<typeof taxPostCustomBodySchema>;
 /**
  * POST /taxes/{id} response body.
  */
-export const taxPostCustomResponseSchema = z.unknown();
+export const taxPostCustomResponseSchema = z
+  .object({
+    cities: z
+      .array(z.string())
+      .optional()
+      .describe("List of city names. Introduced in WooCommerce 5.3."),
+    city: z
+      .string()
+      .optional()
+      .describe(
+        "City name, it doesn't support multiple values. Deprecated as of WooCommerce 5.3, 'cities' should be used instead.",
+      ),
+    class: z
+      .enum(["standard", "reduced-rate", "zero-rate"])
+      .optional()
+      .describe("Tax class."),
+    compound: z
+      .boolean()
+      .optional()
+      .describe("Whether or not this is a compound rate."),
+    country: z.string().optional().describe("Country ISO 3166 code."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Tax rate name."),
+    order: z
+      .number()
+      .optional()
+      .describe("Indicates the order that will appear in queries."),
+    postcode: z
+      .string()
+      .optional()
+      .describe(
+        "Postcode/ZIP, it doesn't support multiple values. Deprecated as of WooCommerce 5.3, 'postcodes' should be used instead.",
+      ),
+    postcodes: z
+      .array(z.string())
+      .optional()
+      .describe("List of postcodes / ZIPs. Introduced in WooCommerce 5.3."),
+    priority: z.number().optional().describe("Tax priority."),
+    rate: z.string().optional().describe("Tax rate."),
+    shipping: z
+      .boolean()
+      .optional()
+      .describe("Whether or not this tax rate also gets applied to shipping."),
+    state: z.string().optional().describe("State code."),
+  })
+  .strict();
 
 export type TaxPostCustomResponse = z.infer<typeof taxPostCustomResponseSchema>;
 
@@ -316,7 +406,52 @@ export type TaxUpdateBody = z.infer<typeof taxUpdateBodySchema>;
 /**
  * PUT /taxes/{id} response body.
  */
-export const taxUpdateResponseSchema = z.unknown();
+export const taxUpdateResponseSchema = z
+  .object({
+    cities: z
+      .array(z.string())
+      .optional()
+      .describe("List of city names. Introduced in WooCommerce 5.3."),
+    city: z
+      .string()
+      .optional()
+      .describe(
+        "City name, it doesn't support multiple values. Deprecated as of WooCommerce 5.3, 'cities' should be used instead.",
+      ),
+    class: z
+      .enum(["standard", "reduced-rate", "zero-rate"])
+      .optional()
+      .describe("Tax class."),
+    compound: z
+      .boolean()
+      .optional()
+      .describe("Whether or not this is a compound rate."),
+    country: z.string().optional().describe("Country ISO 3166 code."),
+    id: z.number().optional().describe("Unique identifier for the resource."),
+    name: z.string().optional().describe("Tax rate name."),
+    order: z
+      .number()
+      .optional()
+      .describe("Indicates the order that will appear in queries."),
+    postcode: z
+      .string()
+      .optional()
+      .describe(
+        "Postcode/ZIP, it doesn't support multiple values. Deprecated as of WooCommerce 5.3, 'postcodes' should be used instead.",
+      ),
+    postcodes: z
+      .array(z.string())
+      .optional()
+      .describe("List of postcodes / ZIPs. Introduced in WooCommerce 5.3."),
+    priority: z.number().optional().describe("Tax priority."),
+    rate: z.string().optional().describe("Tax rate."),
+    shipping: z
+      .boolean()
+      .optional()
+      .describe("Whether or not this tax rate also gets applied to shipping."),
+    state: z.string().optional().describe("State code."),
+  })
+  .strict();
 
 export type TaxUpdateResponse = z.infer<typeof taxUpdateResponseSchema>;
 
@@ -490,7 +625,12 @@ export type TaxesClassDeleteQuery = z.infer<typeof taxesClassDeleteQuerySchema>;
 /**
  * DELETE /taxes/classes/{slug} response body.
  */
-export const taxesClassDeleteResponseSchema = z.unknown();
+export const taxesClassDeleteResponseSchema = z
+  .object({
+    name: z.string().optional().describe("Tax class name."),
+    slug: z.string().optional().describe("Unique identifier for the resource."),
+  })
+  .strict();
 
 export type TaxesClassDeleteResponse = z.infer<
   typeof taxesClassDeleteResponseSchema

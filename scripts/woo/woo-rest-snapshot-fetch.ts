@@ -27,7 +27,55 @@ export interface ResolvedWooCommerceVersion {
 export interface FetchOptionsDocumentsResult {
   documents: Record<string, WordPressRouteDocument | undefined>;
   warnings: string[];
+  failures: string[];
 }
+
+/**
+ * Materialization policy for parameterized route -> concrete OPTIONS URL.
+ *
+ * Woo REST route keys returned by the namespace index are regex templates, e.g.
+ *   /wc/v3/products/(?P<product_id>[\d]+)/variations
+ * WordPress cannot resolve an `OPTIONS` request against the regex string; it
+ * matches a concrete URL through its REST router. To enrich parameterized
+ * routes we must substitute each `(?P<name>pattern)` with a concrete value.
+ *
+ * Supported patterns (explicit allow-list, deterministic placeholders only):
+ *   - `[\d]+` and `\d+`  -> `1`
+ *   - `[\w-]+`          -> `x`
+ *   - `[\w-]{3}`        -> `abc` (currency-style fixed length)
+ *   - `\w[\w\s\-]*`     -> `x`
+ *
+ * Any other regex pattern is rejected; the caller must treat that as a
+ * materialization failure and fail the snapshot pipeline rather than silently
+ * enrich the route from a different URL.
+ */
+export const materializeRouteForOptions = (route: string): string =>
+  route.replace(
+    /\(\?P<([^>]+)>([^)]+)\)/g,
+    (_match: string, name: string, pattern: string): string => {
+      if (pattern === "[\\d]+" || pattern === "\\d+") {
+        return "1";
+      }
+
+      if (pattern === "[\\w-]+") {
+        return "x";
+      }
+
+      if (pattern === "[\\w-]{3}") {
+        return "abc";
+      }
+
+      if (pattern === "\\w[\\w\\s\\-]*") {
+        return "x";
+      }
+
+      throw new Error(
+        `Cannot materialize route ${route}: unsupported path parameter pattern ${JSON.stringify(
+          pattern,
+        )} for ${name}`,
+      );
+    },
+  );
 
 export interface ResolveSnapshotSourceInput {
   baseUrl: string;
@@ -145,35 +193,91 @@ export const fetchOptionsDocuments = async (
   const routes = collectRoutesRequiringOptions(namespaceDocument, options);
   const documents: Record<string, WordPressRouteDocument | undefined> = {};
   const warnings: string[] = [];
+  const failures: string[] = [];
 
   for (const route of routes) {
-    const qualifiedRoute = qualifyRoute(route, options.namespace);
+    const routeDocument = namespaceDocument.routes?.[route];
+    let isRequired = false;
+    if (routeDocument) {
+      isRequired =
+        routeNeedsOptions(routeDocument) &&
+        !isWooMarketplaceConnectRoute(route, options.namespace);
+    }
 
+    const recordDiagnostic = (message: string): void => {
+      const formatted = formatOptionsFetchWarning(route, message);
+
+      if (isRequired) {
+        failures.push(formatted);
+      } else {
+        warnings.push(formatted);
+      }
+    };
+
+    let concreteRoute: string;
     try {
-      documents[route] = await fetchJsonFromCandidates<WordPressRouteDocument>(
+      concreteRoute = materializeRouteForOptions(
+        qualifyRoute(route, options.namespace),
+      );
+    } catch (error) {
+      recordDiagnostic(
+        error instanceof Error
+          ? error.message
+          : "Unknown route materialization error",
+      );
+      continue;
+    }
+
+    let document: WordPressRouteDocument;
+    try {
+      document = await fetchJsonFromCandidates<WordPressRouteDocument>(
         baseUrl,
         [
-          buildWpJsonCandidatePath(qualifiedRoute),
-          buildRestRouteCandidatePath(qualifiedRoute),
+          buildWpJsonCandidatePath(concreteRoute),
+          buildRestRouteCandidatePath(concreteRoute),
         ],
         {
           method: "OPTIONS",
         },
       );
     } catch (error) {
-      warnings.push(
-        formatOptionsFetchWarning(
-          route,
-          error instanceof Error ? error.message : "Unknown OPTIONS error",
-        ),
+      recordDiagnostic(
+        error instanceof Error ? error.message : "Unknown OPTIONS error",
       );
+      continue;
     }
+
+    if (isRequired && !isUsefulEnrichment(document)) {
+      recordDiagnostic(
+        "OPTIONS response did not include schema or endpoint args",
+      );
+      continue;
+    }
+
+    documents[route] = document;
   }
 
   return {
     documents,
     warnings,
+    failures,
   };
+};
+
+const isUsefulEnrichment = (
+  document: WordPressRouteDocument | undefined,
+): boolean => {
+  if (!document || typeof document !== "object") {
+    return false;
+  }
+
+  if (document.schema && typeof document.schema === "object") {
+    return true;
+  }
+
+  return (document.endpoints ?? []).some(
+    (endpoint) => Object.keys(endpoint.args ?? {}).length > 0,
+  );
 };
 
 export const resolveSnapshotSource = async ({
@@ -246,6 +350,12 @@ const qualifyRoute = (route: string, namespace: string): string => {
 
   return `/${namespace}${route.startsWith("/") ? route : `/${route}`}`;
 };
+
+/** WooCommerce.com Connect marketplace routes often omit JSON schema in OPTIONS. */
+const isWooMarketplaceConnectRoute = (
+  route: string,
+  namespace: string,
+): boolean => route.startsWith(`/${namespace}/marketplace`);
 
 const buildWpJsonCandidatePath = (route: string): string => {
   if (route === "/") {
