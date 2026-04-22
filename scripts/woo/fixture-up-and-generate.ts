@@ -117,13 +117,7 @@ const main = async (): Promise<void> => {
   await sleep(SETTLE_MS);
 
   console.log("Generating SDK...");
-  await run("npm", [
-    "run",
-    "generate:woo:snapshot",
-    "--",
-    `--base-url=${baseUrl}`,
-  ]);
-  await run("npm", ["run", "generate:woo"]);
+  await run("npm", ["run", "generate:woo", "--", `--base-url=${baseUrl}`]);
 
   console.log("Done. SDK is in generated/woo-sdk/");
 };

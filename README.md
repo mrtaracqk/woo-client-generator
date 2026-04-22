@@ -1,6 +1,6 @@
 # woo-client-generator
 
-Local Node/TypeScript toolchain for collecting WooCommerce REST API snapshots and generating a TypeScript SDK from them. The SDK includes TypeScript types and [Zod](https://zod.dev) schemas for path/query/body/response, suitable for runtime validation and building LLM tool definitions.
+Local Node/TypeScript toolchain for generating a TypeScript SDK from a live WooCommerce REST API. The SDK includes TypeScript types and [Zod](https://zod.dev) schemas for path/query/body/response, suitable for runtime validation and building LLM tool definitions.
 
 ## Requirements
 
@@ -28,16 +28,16 @@ Uses `WOO_REST_SNAPSHOT_BASE_URL` or `WOO_BASE_URL` from `.env` (default `http:/
 **If WooCommerce is already running** at some URL:
 
 ```bash
-npm run generate:woo:full -- --base-url=http://127.0.0.1:8081
+npm run generate:woo -- --base-url=http://127.0.0.1:8081
 ```
 
-Or set `WOO_REST_SNAPSHOT_BASE_URL` in `.env` and run `npm run generate:woo:full`.
+Or set `WOO_REST_SNAPSHOT_BASE_URL` in `.env` and run `npm run generate:woo`.
 
-Optional: `--woo-version=9.9.7` pins the version in artifact filenames.
+Optional: `--woo-version=9.9.7` pins the version recorded in the generated SDK header.
 
 ---
 
-Other commands: `check`, `test`, `format`, `generate:woo:check`, `generate:woo:sync`, fixture `up`/`bootstrap`/`down`. Internal: `generate:woo:snapshot`, `generate:woo`, `generate:woo:manifest`, `generate:woo:sdk-manifest`, `generate:woo:sdk`, `generate:woo:definitions`.
+Other commands: `check`, `test`, `format`, `generate:woo:sync`, fixture `up`/`bootstrap`/`down`. Internal debug command: `generate:woo:snapshot`.
 
 ## SDK Playground
 
@@ -51,7 +51,7 @@ If the browser blocks requests (different origin than Woo), run a CORS proxy and
 
 ## Generated SDK layout
 
-Output under `generated/woo-sdk/src/`:
+Product output under `generated/woo-sdk/src/`:
 
 - **`client.ts`** — HTTP client and request helpers
 - **`index.ts`** — re-exports
@@ -64,8 +64,8 @@ The SDK depends on `zod` (^3.x). Use the exported schemas for runtime validation
 ## Notes
 
 - Scripts run with `tsx`; `ts-node` is not required.
-- Snapshot generation is deterministic: routes, methods, and JSON keys are sorted; the snapshot does not embed a timestamp.
-- SDK manifest: `generated/woo-rest/woo-vX.Y.Z.sdk-manifest.json` (separate from the legacy `.manifest.json`).
+- SDK generation is deterministic for a fixed Woo REST surface: routes, methods, and JSON keys are sorted before codegen.
 - Namespace: `--namespace` or `WOO_REST_SNAPSHOT_NAMESPACE`; default `wc/v3`.
 - WooCommerce version: `--woo-version` or `WOO_REST_SNAPSHOT_WOO_VERSION`, then live `readme.txt`, then `unknown`.
-- If a route does not expose `OPTIONS`, the snapshot step logs a warning and continues without enrichment.
+- If a route does not expose `OPTIONS`, generation logs a warning and continues without enrichment when that route is optional.
+- The main generation flow writes only `generated/woo-sdk/src/**`; intermediate snapshot/manifest JSON files are not part of the product output.

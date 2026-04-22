@@ -86,31 +86,11 @@ const buildSyncSteps = (
     command: "npm",
     args: [
       "run",
-      "generate:woo:snapshot",
+      "generate:woo",
       "--",
       `--base-url=${options.baseUrl}`,
       `--namespace=${options.namespace}`,
     ],
-  },
-  {
-    command: "npm",
-    args: ["run", "generate:woo:manifest"],
-  },
-  {
-    command: "npm",
-    args: ["run", "generate:woo:sdk-manifest"],
-  },
-  {
-    command: "npm",
-    args: ["run", "generate:woo:sdk"],
-  },
-  {
-    command: "npm",
-    args: ["run", "generate:woo:definitions"],
-  },
-  {
-    command: "npm",
-    args: ["run", "generate:woo:check"],
   },
 ];
 
